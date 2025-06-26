@@ -1,0 +1,38 @@
+########################################
+#     .NET / Visual Studio / C#        #
+########################################
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dbmdl
+*.pdb
+*.cache
+*.log
+
+.vs/
+.vscode/
+
+appsettings.*.json
+secrets.json
+Migrations/
+
+########################################
+#             Angular                  #
+########################################
+nested-comments-ui/node_modules/
+nested-comments-ui/dist/
+nested-comments-ui/out-tsc/
+nested-comments-ui/.angular/cache/
+
+########################################
+#           OS / Editor                #
+########################################
+*.swp
+*.bak
+*.tmp
+*.~ 
+.DS_Store
+Thumbs.db
