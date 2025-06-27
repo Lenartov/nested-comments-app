@@ -15,7 +15,7 @@ namespace NestedComments.Api.Data
                 .HasMany(c => c.Replies)
                 .WithOne(c => c.ParentComment)
                 .HasForeignKey(c => c.ParentCommentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
