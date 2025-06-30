@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NestedComments.Api.Data;
+using NestedComments.Api.Services;
 
 namespace NestedComments.Api
 {
@@ -22,6 +23,10 @@ namespace NestedComments.Api
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            builder.Services.AddScoped<ICaptchaService, CaptchaService>();
+            builder.Services.AddScoped<CommentSanitizer>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddScoped<IFileService, FileService>();
 
             WebApplication app = builder.Build();
 

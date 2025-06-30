@@ -4,7 +4,7 @@
 [Route("api/[controller]")]
 public class CaptchaController : ControllerBase
 {
-    [HttpGet("captcha")]
+    [HttpGet]
     public IActionResult GetCaptcha()
     {
         var code = CaptchaGenerator.GenerateCaptchaCode();

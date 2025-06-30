@@ -36,7 +36,7 @@ public static class CaptchaGenerator
         image.Mutate(ctx =>
         {
             ctx.DrawText(captchaCode, font, Color.Black, new PointF(20, 10));
-            // додати шум/лінії тут якщо потрібно
+            // add some noise
         });
 
         using var ms = new MemoryStream();

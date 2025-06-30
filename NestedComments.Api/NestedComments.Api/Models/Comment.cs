@@ -9,7 +9,7 @@ namespace NestedComments.Api.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(20)]
         public string UserName { get; set; } = null!;
 
         [Required]
@@ -26,6 +26,9 @@ namespace NestedComments.Api.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public string? FilePath { get; set; }
+
+        [MaxLength(10)]
+        public string? FileExtension { get; set; }
 
         public int? ParentCommentId { get; set; }
 

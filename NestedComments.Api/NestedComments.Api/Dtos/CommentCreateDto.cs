@@ -2,10 +2,13 @@
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
+namespace NestedComments.Api.Dtos;
+
 public class CommentCreateDto
 {
     [Required(ErrorMessage = "User Name is required")]
     [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "User Name must contain only Latin letters and digits")]
+    [StringLength(1000, ErrorMessage = "Username is too long")]
     public required string UserName { get; set; }
 
     [Required(ErrorMessage = "Email is required")]

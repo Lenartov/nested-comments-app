@@ -1,33 +1,46 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NestedComments.Api.Data;
+using NestedComments.Api.Dtos;
 using NestedComments.Api.Models;
+using NestedComments.Api.Services;
 
 namespace NestedComments.Api.Controllers
 {
     [ApiController]
-    [Route("api/comments")]
+    [Route("api/[controller]")]
     public class CommentsController : ControllerBase
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly IFileService _fileService;
+        private readonly ICommentService _commentService;
+        private readonly ICaptchaService _captchaService;
 
-        public CommentsController(AppDbContext context, IWebHostEnvironment environment)
+        public CommentsController(
+            AppDbContext context,
+            IWebHostEnvironment environment,
+            IFileService fileService,
+            ICommentService commentService,
+            ICaptchaService captchaService)
         {
             _context = context;
             _environment = environment;
+            _fileService = fileService;
+            _commentService = commentService;
+            _captchaService = captchaService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
+        public async Task<ActionResult<IEnumerable<CommentReadDto>>> GetComments(
+            [FromQuery] string sortBy = "CreatedAt",
+            [FromQuery] string sortDir = "desc",
+            [FromQuery] int page = 1)
         {
-            var comments = await _context.Comments
-                .Include(c => c.Replies)
-                .Where(c => c.ParentCommentId == null)
-                .ToListAsync();
-
+            var comments = await _commentService.GetCommentsAsync(sortBy, sortDir, page);
             return Ok(comments);
         }
+
 
         [HttpPost]
         [Consumes("multipart/form-data")]
@@ -36,46 +49,28 @@ namespace NestedComments.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var storedCaptcha = HttpContext.Session.GetString("CaptchaCode");
 
-            if (string.IsNullOrEmpty(storedCaptcha) ||
-                !string.Equals(storedCaptcha, dto.Captcha, StringComparison.OrdinalIgnoreCase))
-            {
+            if (!_captchaService.ValidateCaptcha(HttpContext, dto.Captcha))
                 return BadRequest(new { error = "Invalid CAPTCHA" });
-            }
 
             string? savedFilePath = null;
+            string? fileExtension = null;
             if (file != null)
             {
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-                Directory.CreateDirectory(uploadsFolder);
-
-                var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-                var filePath = Path.Combine(uploadsFolder, fileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                try
                 {
-                    await file.CopyToAsync(fileStream);
+                    savedFilePath = await _fileService.SaveFileAsync(file);
+                    fileExtension = _fileService.GetFileExtension(file);
                 }
-
-                savedFilePath = "/uploads/" + fileName;
+                catch (InvalidOperationException ex)
+                {
+                    return BadRequest(new { error = ex.Message });
+                }
             }
 
 
-            var comment = new Comment
-            {
-                UserName = dto.UserName,
-                Email = dto.Email,
-                HomePage = dto.HomePage,
-                Message = dto.Message,
-                CreatedAt = DateTime.UtcNow,
-                ParentCommentId = dto.ParentCommentId
-            };
-
-            _context.Comments.Add(comment);
-            await _context.SaveChangesAsync();
-
-            return Ok(comment);
+            var commentReadDto = _commentService.MapToReadDto(await _commentService.CreateCommentAsync(dto, savedFilePath, fileExtension));
+            return Ok(commentReadDto);
         }
 
     }
