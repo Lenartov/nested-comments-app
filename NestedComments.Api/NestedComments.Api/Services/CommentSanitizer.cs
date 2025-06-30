@@ -3,7 +3,7 @@
 namespace NestedComments.Api.Services
 {
 
-    public class CommentSanitizer
+    public class CommentSanitizer : ICommentSanitizer
     {
         private readonly HtmlSanitizer _sanitizer;
 
@@ -29,6 +29,18 @@ namespace NestedComments.Api.Services
         public string Sanitize(string input)
         {
             return _sanitizer.Sanitize(input);
+        }
+
+        public bool IsContainValidTags(string input)
+        {
+            var sanitaizedInput = _sanitizer.Sanitize(input);
+
+            if (sanitaizedInput == input)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

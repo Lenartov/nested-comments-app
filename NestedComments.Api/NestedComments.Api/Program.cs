@@ -24,9 +24,9 @@ namespace NestedComments.Api
                 options.Cookie.IsEssential = true;
             });
             builder.Services.AddScoped<ICaptchaService, CaptchaService>();
-            builder.Services.AddScoped<CommentSanitizer>();
-            builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddScoped<ICommentSanitizer, CommentSanitizer>();
             builder.Services.AddScoped<IFileService, FileService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
 
             WebApplication app = builder.Build();
 

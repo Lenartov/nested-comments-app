@@ -8,9 +8,9 @@ namespace NestedComments.Api.Services;
 public class CommentService : ICommentService
 {
     private readonly AppDbContext _context;
-    private readonly CommentSanitizer _sanitizer;
+    private readonly ICommentSanitizer _sanitizer;
 
-    public CommentService(AppDbContext context, CommentSanitizer sanitizer)
+    public CommentService(AppDbContext context, ICommentSanitizer sanitizer)
     {
         _context = context;
         _sanitizer = sanitizer;
@@ -18,14 +18,20 @@ public class CommentService : ICommentService
 
     public async Task<Comment> CreateCommentAsync(CommentCreateDto dto, string? filePath, string fileExtension)
     {
-        var sanitizedMessage = _sanitizer.Sanitize(dto.Message);
+        /*string sanitizedMessage = _sanitizer.Sanitize(dto.Message);
+        string sanitizedEmail = _sanitizer.Sanitize(dto.Email);
+        string sanitizedUserName = _sanitizer.Sanitize(dto.UserName);
+        string? sanitizedHomePage = null;
+        
+        if(dto.HomePage is not null)
+            sanitizedHomePage = _sanitizer.Sanitize(dto.HomePage);*/
 
-        var comment = new Comment
+        Comment comment = new Comment
         {
             UserName = dto.UserName,
             Email = dto.Email,
             HomePage = dto.HomePage,
-            Message = sanitizedMessage,
+            Message = dto.Message,
             CreatedAt = DateTime.UtcNow,
             ParentCommentId = dto.ParentCommentId,
             FilePath = filePath,
@@ -38,7 +44,7 @@ public class CommentService : ICommentService
         return comment;
     }
 
-    public async Task<IEnumerable<CommentReadDto>> GetCommentsAsync(string sortBy = "CreatedAt", string sortDir = "desc", int page = 1, int pageSize = 25)
+    public async Task<IEnumerable<CommentReadDto>> GetCommentsAsync(string sortBy = "CreatedAt", string sortDir = "desc", int page = 1, int pageSize = 5)
     {
         IQueryable<Comment> query = _context.Comments
             .Include(c => c.Replies)
@@ -54,6 +60,9 @@ public class CommentService : ICommentService
             ("createdat", "desc") => query.OrderByDescending(c => c.CreatedAt),
             _ => query.OrderByDescending(c => c.CreatedAt)
         };
+
+        if (page <= 0)
+            page = 1;
 
         var comments = await query
             .Skip((page - 1) * pageSize)

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using NestedComments.Api.Constants;
 
 namespace NestedComments.Api.Models
 {
@@ -9,18 +10,17 @@ namespace NestedComments.Api.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(20)]
+        [MaxLength(ValidationRules.UserNameMaxLength)]
         public string UserName { get; set; } = null!;
 
         [Required]
-        [EmailAddress]
+        [MaxLength(ValidationRules.EmailMaxLength)]
         public string Email { get; set; } = null!;
 
-        [Url]
         public string? HomePage { get; set; }
 
         [Required]
-        [MaxLength(1000)]
+        [MaxLength(ValidationRules.MessageMaxLength)]
         public string Message { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

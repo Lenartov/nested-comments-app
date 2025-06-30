@@ -16,19 +16,23 @@ namespace NestedComments.Api.Controllers
         private readonly IFileService _fileService;
         private readonly ICommentService _commentService;
         private readonly ICaptchaService _captchaService;
+        private readonly ICommentSanitizer _commentSanitizer;
 
         public CommentsController(
             AppDbContext context,
             IWebHostEnvironment environment,
             IFileService fileService,
             ICommentService commentService,
-            ICaptchaService captchaService)
+            ICaptchaService captchaService,
+            ICommentSanitizer commentSanitizer
+            )
         {
             _context = context;
             _environment = environment;
             _fileService = fileService;
             _commentService = commentService;
             _captchaService = captchaService;
+            _commentSanitizer = commentSanitizer;
         }
 
         [HttpGet]
@@ -50,8 +54,21 @@ namespace NestedComments.Api.Controllers
                 return BadRequest(ModelState);
 
 
-            if (!_captchaService.ValidateCaptcha(HttpContext, dto.Captcha))
-                return BadRequest(new { error = "Invalid CAPTCHA" });
+           // if (!_captchaService.ValidateCaptcha(HttpContext, dto.Captcha))
+           //     return BadRequest(new { error = "Invalid CAPTCHA" });
+
+            if(!_commentSanitizer.IsContainValidTags(dto.Message))
+                return BadRequest(new { error = "Message contains invalid content" });
+
+            if (!_commentSanitizer.IsContainValidTags(dto.Email))
+                return BadRequest(new { error = "Email contains invalid content" });
+
+            if (!_commentSanitizer.IsContainValidTags(dto.UserName))
+                return BadRequest(new { error = "Username contains invalid content" });
+
+            if (dto.HomePage is not null && !_commentSanitizer.IsContainValidTags(dto.HomePage))
+                return BadRequest(new { error = "Home page contains invalid content" });
+
 
             string? savedFilePath = null;
             string? fileExtension = null;
