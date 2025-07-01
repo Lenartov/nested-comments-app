@@ -1,0 +1,19 @@
+<ul class="comment-list">
+  <li *ngFor="let comment of comments" class="comment-item">
+    <div class="comment-header">
+      <span class="comment-username">{{ comment.userName }}</span>
+      <span class="comment-date">{{ comment.createdAt | date:'short' }}</span>
+    </div>
+        <div class="comment-message">{{ comment.message }}</div>
+      <div class="comment-homepage" *ngIf="comment.homePage">
+      <a [href]="comment.homePage" target="_blank" rel="noopener noreferrer">Перейти на сайт</a>
+    </div>
+    <div *ngIf="comment.filePath" class="comment-file">
+      <a [href]="comment.filePath" target="_blank" rel="noopener noreferrer">
+        Файл ({{ comment.fileExtension || 'file' }})
+      </a>
+    </div>
+    <!-- Рекурсивне виведення відповідей -->
+    <app-comment-list *ngIf="comment.replies?.length" [comments]="comment.replies"></app-comment-list>
+  </li>
+</ul>

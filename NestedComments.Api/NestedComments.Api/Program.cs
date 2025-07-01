@@ -27,6 +27,16 @@ namespace NestedComments.Api
             builder.Services.AddScoped<ICommentSanitizer, CommentSanitizer>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularApp",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
 
             WebApplication app = builder.Build();
 
@@ -36,6 +46,7 @@ namespace NestedComments.Api
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("AllowAngularApp");
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthorization();

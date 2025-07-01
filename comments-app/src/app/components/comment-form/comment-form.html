@@ -1,0 +1,73 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="comment-form">
+  <div class="form-group">
+    <label for="userName">User Name</label>
+    <input
+      id="userName"
+      type="text"
+      formControlName="userName"
+      placeholder="Enter user name"
+      [class.invalid]="form.controls['userName'].invalid && form.controls['userName'].touched"
+    />
+    <div *ngIf="form.controls['userName'].invalid && form.controls['userName'].touched" class="error">
+      User Name is required and must contain only Latin letters and digits.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      type="email"
+      formControlName="email"
+      placeholder="Enter email"
+      [class.invalid]="form.controls['email'].invalid && form.controls['email'].touched"
+    />
+    <div *ngIf="form.controls['email'].invalid && form.controls['email'].touched" class="error">
+      Valid email is required.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="homePage">Home Page (optional)</label>
+    <input
+      id="homePage"
+      type="url"
+      formControlName="homePage"
+      placeholder="Enter homepage URL"
+      [class.invalid]="form.controls['homePage'].invalid && form.controls['homePage'].touched"
+    />
+    <div *ngIf="form.controls['homePage'].invalid && form.controls['homePage'].touched" class="error">
+      Invalid URL format.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="captcha">Captcha</label>
+    <input
+      id="captcha"
+      type="text"
+      formControlName="captcha"
+      placeholder="Enter captcha"
+      [class.invalid]="form.controls['captcha'].invalid && form.controls['captcha'].touched"
+    />
+    <div *ngIf="form.controls['captcha'].invalid && form.controls['captcha'].touched" class="error">
+      Captcha is required and must contain only Latin letters and digits.
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="message">Message</label>
+    <textarea
+      id="message"
+      formControlName="message"
+      placeholder="Write your comment"
+      rows="5"
+      [class.invalid]="form.controls['message'].invalid && form.controls['message'].touched"
+    ></textarea>
+    <div *ngIf="form.controls['message'].invalid && form.controls['message'].touched" class="error">
+      Message text is required.
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="form.invalid">Submit</button>
+</form>

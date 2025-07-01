@@ -1,0 +1,81 @@
+/* comment-list.css */
+
+.comment-list {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 0;
+  list-style: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.comment-item {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.comment-item:hover {
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.comment-username {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.comment-date {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+.comment-message {
+  font-size: 1rem;
+  color: #444;
+  white-space: pre-wrap; /* зберігає перенос рядків */
+}
+
+.comment-homepage {
+  margin-top: 8px;
+}
+
+.comment-homepage a {
+  color: #007acc;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.comment-homepage a:hover {
+  text-decoration: underline;
+}
+
+/* Відступ для відповідей (ріплаїв) */
+.comment-replies {
+  margin-top: 15px;
+  padding-left: 20px;
+  border-left: 3px solid #ddd;
+}
+
+/* Для маленьких екранів */
+@media (max-width: 480px) {
+  .comment-list {
+    padding: 0 10px;
+  }
+  .comment-item {
+    padding: 12px 15px;
+  }
+  .comment-username {
+    font-size: 1rem;
+  }
+}
