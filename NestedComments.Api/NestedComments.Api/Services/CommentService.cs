@@ -44,12 +44,19 @@ public class CommentService : ICommentService
         return comment;
     }
 
-    public async Task<IEnumerable<CommentReadDto>> GetCommentsAsync(string sortBy = "CreatedAt", string sortDir = "desc", int page = 1, int pageSize = 5)
+
+
+    public async Task<(IEnumerable<CommentReadDto> items, int totalCount)> GetCommentsAsync(
+        int? parentId = null,
+        string sortBy = "CreatedAt",
+        string sortDir = "desc",
+        int page = 1,
+        int pageSize = 25)
     {
         IQueryable<Comment> query = _context.Comments
-            .Include(c => c.Replies)
-            .Where(c => c.ParentCommentId == null);
+            .Where(c => c.ParentCommentId == parentId);
 
+        // Сортування
         query = (sortBy.ToLower(), sortDir.ToLower()) switch
         {
             ("username", "asc") => query.OrderBy(c => c.UserName),
@@ -61,15 +68,32 @@ public class CommentService : ICommentService
             _ => query.OrderByDescending(c => c.CreatedAt)
         };
 
-        if (page <= 0)
-            page = 1;
+        if (page <= 0) page = 1;
+
+        int totalCount = await query.CountAsync();
 
         var comments = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        return comments.Select(MapToReadDto);
+        // Додаємо HasReplies
+        var commentIds = comments.Select(c => c.Id).ToList();
+
+        var repliesCount = await _context.Comments
+            .Where(c => commentIds.Contains(c.ParentCommentId.Value))
+            .GroupBy(c => c.ParentCommentId)
+            .Select(g => new { ParentId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.ParentId!.Value, x => x.Count);
+
+        var commentDtos = comments.Select(c =>
+        {
+            var dto = MapToReadDto(c);
+            dto.HasReplies = repliesCount.ContainsKey(c.Id);
+            return dto;
+        });
+
+        return (commentDtos, totalCount);
     }
 
     public CommentReadDto MapToReadDto(Comment comment)
@@ -79,11 +103,11 @@ public class CommentService : ICommentService
             Id = comment.Id,
             UserName = comment.UserName,
             Message = comment.Message,
+            Email = comment.Email,
             CreatedAt = comment.CreatedAt,
             HomePage = comment.HomePage,
             FilePath = comment.FilePath,
             FileExtension = comment.FileExtension,
-            Replies = comment.Replies?.Select(MapToReadDto).ToList() ?? new List<CommentReadDto>()
         };
     }
 }

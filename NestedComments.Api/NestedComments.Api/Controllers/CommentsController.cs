@@ -36,14 +36,18 @@ namespace NestedComments.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CommentReadDto>>> GetComments(
-            [FromQuery] string sortBy = "CreatedAt",
-            [FromQuery] string sortDir = "desc",
-            [FromQuery] int page = 1)
+        public async Task<IActionResult> GetComments(
+            int? parentId,
+            string sortBy = "CreatedAt",
+            string sortDir = "desc",
+            int page = 1,
+            int pageSize = 25)
         {
-            var comments = await _commentService.GetCommentsAsync(sortBy, sortDir, page);
-            return Ok(comments);
+            var (items, totalCount) = await _commentService.GetCommentsAsync(parentId, sortBy, sortDir, page, pageSize);
+            return Ok(new { items, totalCount });
         }
+
+
 
 
         [HttpPost]
