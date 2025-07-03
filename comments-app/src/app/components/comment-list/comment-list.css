@@ -43,34 +43,6 @@ tbody td {
   color: #333;
 }
 
-.pagination {
-  margin-top: 15px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.pagination button {
-  background: #007bff;
-  border: none;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-}
-
-.pagination button:disabled {
-  background: #a3c0f9;
-  cursor: default;
-}
-
-.pagination button:hover:not(:disabled) {
-  background: #0056b3;
-}
 
 .comment-count {
   font-weight: 600;
@@ -107,22 +79,32 @@ button:focus {
     justify-content: center;
 }
 
-.pagination button {
-  margin: 0 2px;
-  padding: 5px 10px;
-  border: none;
-  background-color: #eee;
-  cursor: pointer;
-  border-radius: 4px;
+.pagination {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  justify-content: center;
 }
 
-.pagination button.active {
-  background-color: #4285f4;
+.pagination button {
+  background: #007bff;
+  border: none;
   color: white;
-  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 .pagination button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+  background: #a3c0f9;
+  cursor: default;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #0056b3;
 }

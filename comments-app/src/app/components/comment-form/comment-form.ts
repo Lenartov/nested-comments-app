@@ -62,13 +62,12 @@ export class CommentForm {
 
       this.commentService.postComment(formData).subscribe({
         next: (res) => {
-          console.log('Коментар додано:', res);
+          console.log('Comment added', res);
           this.form.reset();
           this.selectedFile = null;
-          // Тут можна додати emit події або логіку оновлення списку
         },
         error: (err) => {
-          console.error('Помилка при додаванні коментаря:', err);
+          console.error('Error adding a comment', err);
         },
       });
     }

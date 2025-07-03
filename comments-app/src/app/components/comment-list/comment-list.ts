@@ -23,17 +23,12 @@ replyPaginationMap: {
   }
 } = {};
 
-  // Картка з дочірніми коментарями (id батька => replies)
   commentRepliesMap: { [parentId: number]: CommentRead[] } = {};
-
-  // Множина id коментарів, які розгорнуті для показу відповідей
   expandedComments = new Set<number>();
 
-  // Параметри сортування (інтегровано)
   sortBy: string = 'createdAt';
   sortDirection: 'asc' | 'desc' = 'desc';
 
-  // Параметри пагінації
   pageSize = 5;
   currentPage = 1;
   totalCount = 0;
@@ -45,7 +40,6 @@ replyPaginationMap: {
       this.loadComments();
   }
 
-  // Завантаження коментарів із сервера з урахуванням пагінації та сортування
   loadComments(): void {
     this.commentService.getComments(
       this.currentPage,
@@ -62,7 +56,6 @@ replyPaginationMap: {
     });
   }
 
-  // Показати / приховати відповіді
   toggleReplies(comment: CommentRead): void {
     if (this.isExpanded(comment)) {
       this.expandedComments.delete(comment.id);
@@ -74,7 +67,6 @@ replyPaginationMap: {
     }
   }
 
-  // Перевірка чи розгорнутий коментар
   isExpanded(comment: CommentRead): boolean {
     return this.expandedComments.has(comment.id);
   }
@@ -130,14 +122,12 @@ sort(field: keyof CommentRead) {
   });
 }
 
-  // Переходи між сторінками пагінації
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
     this.loadComments();
   }
 
-  // Загальна кількість сторінок
   get totalPages(): number {
     return Math.ceil(this.totalCount / this.pageSize);
   }
