@@ -99,3 +99,30 @@ button:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgb(0 123 255 / 0.5);
 }
+
+.pagination {
+  margin: 20px auto;
+  margin-top: 1em;
+  text-align: center;
+    justify-content: center;
+}
+
+.pagination button {
+  margin: 0 2px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination button.active {
+  background-color: #4285f4;
+  color: white;
+  font-weight: bold;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

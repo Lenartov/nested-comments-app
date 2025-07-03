@@ -18,18 +18,5 @@ export class App {
   comments: CommentListResponse = {items: [], totalCount: 0};
 
   constructor(private http: HttpClient, private commentService: CommentService) {}
+}
 
-ngOnInit() {
-    this.commentService.getComments().subscribe(data => {
-      this.comments = data;
-    });
-  }}
-  
-  /*ngOnInit() {
-    this.commentService.getComments().subscribe(data => {
-      this.comments = data;
-        console.log('Отримані коментарі:', this.comments);
-
-    });
-  }*/
-    

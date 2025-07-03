@@ -19,11 +19,17 @@ export class CommentService {
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
 
-    return this.http.get<CommentListResponse>(this.apiUrl);
+    return this.http.get<CommentListResponse>(this.apiUrl, {params});
   }
   
-    getReplies(parentId: number): Observable<CommentListResponse> {
-    const params = new HttpParams().set('parentId', parentId.toString());
+    getReplies(parentId: number, sortBy: string = 'CreatedAt', sortDir: string = 'desc', page: number = 1, pageSize: number = 25): Observable<CommentListResponse> {
+      const params = new HttpParams()
+      .set('parentId', parentId.toString())
+      .set('sortBy', sortBy)
+      .set('sortDir', sortDir)
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+
     return this.http.get<CommentListResponse>(this.apiUrl, { params });
   }
 

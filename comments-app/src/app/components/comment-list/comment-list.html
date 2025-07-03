@@ -1,23 +1,34 @@
+<div class="pagination">
+  <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
+
+  <button *ngFor="let page of [].constructor(totalPages); let i = index"
+          (click)="goToPage(i + 1)"
+          [class.active]="currentPage === i + 1">
+    {{ i + 1 }}
+  </button>
+
+  <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+</div>
 <table class="comments-table">
  <thead>
     <tr>
       <th (click)="sort('userName')">
         User Name
-        <span *ngIf="sortField === 'userName'">
+        <span *ngIf="sortBy === 'userName'">
           <span *ngIf="sortDirection === 'asc'">&#9650;</span>  <!-- стрілочка вгору -->
           <span *ngIf="sortDirection === 'desc'">&#9660;</span> <!-- стрілочка вниз -->
         </span>
       </th>
       <th (click)="sort('email')">
         Email
-        <span *ngIf="sortField === 'email'">
+        <span *ngIf="sortBy === 'email'">
           <span *ngIf="sortDirection === 'asc'">&#9650;</span>
           <span *ngIf="sortDirection === 'desc'">&#9660;</span>
         </span>
       </th>
       <th (click)="sort('createdAt')">
         Created At
-        <span *ngIf="sortField === 'createdAt'">
+        <span *ngIf="sortBy === 'createdAt'">
           <span *ngIf="sortDirection === 'asc'">&#9650;</span>
           <span *ngIf="sortDirection === 'desc'">&#9660;</span>
         </span>
@@ -35,24 +46,48 @@
         <td>{{ comment.createdAt | date:'short' }}</td>
         <td>
           <button *ngIf="comment.hasReplies" (click)="toggleReplies(comment)">
-            {{ isExpanded(comment) ? 'Hide Replies' : 'Show Replies' }} ({{ comment.hasReplies }})
+            {{ isExpanded(comment) ? 'Hide Replies' : 'Show Replies' }}
           </button>
         </td>
       </tr>
 
-      <!-- Відповіді, якщо коментар розгорнутий -->
       <tr *ngIf="isExpanded(comment)" class="replies-row">
-        <td colspan="5">
-          <app-comment-list 
-            [comments]="commentRepliesMap[comment.id]" 
-            *ngIf="commentRepliesMap[comment.id]?.length; else noReplies">
-          </app-comment-list>
+  <td colspan="5">
+    <app-comment-list 
+      [comments]="commentRepliesMap[comment.id]"
+      *ngIf="commentRepliesMap[comment.id]?.length"
+    ></app-comment-list>
 
-          <ng-template #noReplies>
-            <div>No replies found.</div>
-          </ng-template>
-        </td>
-      </tr>
+    <ng-template #noReplies>
+      <div>No replies found.</div>
+    </ng-template>
+
+    <!-- ⬇️ Пагінація для replies -->
+    <div class="pagination" *ngIf="replyPaginationMap[comment.id]">
+      <button 
+        (click)="changeReplyPage(comment.id, replyPaginationMap[comment.id].page - 1)"
+        [disabled]="replyPaginationMap[comment.id].page === 1"
+      >
+        Prev
+      </button>
+
+      <button
+        *ngFor="let p of [].constructor(replyPaginationMap[comment.id].totalPages); let i = index"
+        (click)="changeReplyPage(comment.id, i + 1)"
+        [class.active]="replyPaginationMap[comment.id].page === i + 1"
+      >
+        {{ i + 1 }}
+      </button>
+
+      <button 
+        (click)="changeReplyPage(comment.id, replyPaginationMap[comment.id].page + 1)"
+        [disabled]="replyPaginationMap[comment.id].page === replyPaginationMap[comment.id].totalPages"
+      >
+        Next
+      </button>
+    </div>
+  </td>
+</tr>
     </ng-container>
   </tbody>
 </table>
