@@ -11,24 +11,24 @@ export class CommentService {
 
   constructor(private http: HttpClient) {}
 
-  getComments(sortBy: string = 'CreatedAt', sortDir: string = 'desc', page: number = 1, pageSize: number = 25): Observable<CommentListResponse> {
+  getComments(page: number = 1): Observable<CommentListResponse> {
 
         const params = new HttpParams()
-      .set('sortBy', sortBy)
-      .set('sortDir', sortDir)
+      .set('sortBy', 'CreatedAt')
+      .set('sortDir', 'desc')
       .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
+      .set('pageSize', 5);
 
     return this.http.get<CommentListResponse>(this.apiUrl, {params});
   }
   
-    getReplies(parentId: number, sortBy: string = 'CreatedAt', sortDir: string = 'desc', page: number = 1, pageSize: number = 25): Observable<CommentListResponse> {
+    getReplies(parentId: number, page: number = 1): Observable<CommentListResponse> {
       const params = new HttpParams()
       .set('parentId', parentId.toString())
-      .set('sortBy', sortBy)
-      .set('sortDir', sortDir)
+      .set('sortBy', 'CreatedAt')
+      .set('sortDir', 'desc')
       .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
+      .set('pageSize', 5);
 
     return this.http.get<CommentListResponse>(this.apiUrl, { params });
   }

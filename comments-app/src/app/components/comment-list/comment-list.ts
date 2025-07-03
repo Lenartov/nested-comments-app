@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
 })
 export class CommentList implements OnInit {
+  @Input() currentId: number = 0;
   @Input() comments: CommentRead[] = [];
 
 replyPaginationMap: {
@@ -46,10 +47,7 @@ replyPaginationMap: {
   // Завантаження коментарів із сервера з урахуванням пагінації та сортування
   loadComments(): void {
     this.commentService.getComments(
-      this.sortBy,
-      this.sortDirection,
       this.currentPage,
-      this.pageSize,
     ).subscribe({
       next: (data: CommentListResponse) => {
         this.comments = data.items;
@@ -81,14 +79,14 @@ replyPaginationMap: {
   }
 
 loadReplies(comment: CommentRead, page: number = 1): void {
-  this.commentService.getReplies(comment.id, this.sortBy, this.sortDirection, 1, 100).subscribe({
+  this.commentService.getReplies(comment.id, page).subscribe({
   next: (response) => {
     this.commentRepliesMap[comment.id] = response.items;
 
     this.replyPaginationMap[comment.id] = {
       page: page,
-      pageSize: 100,
-      totalPages: 1,
+      pageSize: 5,
+      totalPages: Math.ceil(response.totalCount / 5),
     };
   },
     error: (err) => {
@@ -102,15 +100,34 @@ changeReplyPage(commentId: number, newPage: number) {
   this.loadReplies({ id: commentId } as CommentRead, newPage);
 }
 
-  // Сортування таблиці
-  sort(field: keyof CommentRead): void {
-    if (this.sortBy === field) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortBy = field;
-      this.sortDirection = 'asc';
-    }
+sort(field: keyof CommentRead) {
+  if (this.sortBy === field) {
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    this.sortBy = field;
+    this.sortDirection = 'asc';
   }
+
+  this.comments.sort((a, b) => {
+    let valA = a[field];
+    let valB = b[field];
+
+    let compareA: any = valA;
+    let compareB: any = valB;
+
+    if (field === 'createdAt') {
+      compareA = typeof valA === 'string' ? new Date(valA) : new Date(0);
+      compareB = typeof valB === 'string' ? new Date(valB) : new Date(0);
+    }
+
+    if (compareA == null) return 1;
+    if (compareB == null) return -1;
+
+    if (compareA < compareB) return this.sortDirection === 'asc' ? -1 : 1;
+    if (compareA > compareB) return this.sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
+}
 
   // Переходи між сторінками пагінації
   goToPage(page: number): void {
