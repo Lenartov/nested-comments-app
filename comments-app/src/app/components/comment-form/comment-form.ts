@@ -18,8 +18,8 @@ export class CommentForm {
 
   constructor(private fb: FormBuilder, private commentService: CommentService) {
     this.form = this.fb.group({
-      userName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$'), Validators.maxLength(50)]],
-      email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
+      userName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$'), Validators.maxLength(30)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
       homePage: ['', Validators.pattern('https?://.+')],
       captcha: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$')]],
       message: ['', [Validators.required, Validators.maxLength(1000), noScriptValidator]],
