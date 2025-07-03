@@ -26,7 +26,6 @@
           <span *ngIf="sortDirection === 'desc'">&#9660;</span>
         </span>
       </th>
-      <th>Message</th>
       <th (click)="sort('createdAt')">
         Created At
         <span *ngIf="sortBy === 'createdAt'">
@@ -34,7 +33,9 @@
           <span *ngIf="sortDirection === 'desc'">&#9660;</span>
         </span>
       </th>
+      <th>Message</th>
       <th>Replies</th>
+      <th>File</th>
     </tr>
   </thead>
   <tbody>
@@ -42,15 +43,33 @@
       <tr>
         <td>{{ comment.userName }}</td>
         <td>{{ comment.email }}</td>
-        <td [innerHTML]="comment.message | safeHtml">{{ comment.message }}</td>
         <td>{{ comment.createdAt | date:'short' }}</td>
+        
+        <td [innerHTML]="comment.message | safeHtml">{{ comment.message }}</td>
         <td>
           <button *ngIf="comment.hasReplies" (click)="toggleReplies(comment)">
             {{ isExpanded(comment) ? 'Hide Replies' : 'Show Replies' }}
           </button>
         </td>
-      </tr>
-
+        <td>
+  <button 
+    *ngIf="comment.filePath" 
+    (click)="openFile(comment.filePath, comment.fileExtension)"
+    class="btn btn-sm btn-primary">
+    Open File
+  </button>
+</td>
+</tr>
+<div *ngIf="fileModalUrl" class="modal-overlay" (click)="closeFile()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <ng-container *ngIf="isImageFile(fileModalUrl); else notImage">
+      <img [src]="fileModalUrl" alt="Файл" />
+    </ng-container>
+    <ng-template #notImage>
+      <iframe [src]="fileModalUrl" frameborder="0" width="100%" height="500px"></iframe>
+    </ng-template>
+  </div>
+</div>
       <tr *ngIf="isExpanded(comment)" class="replies-row">
   <td colspan="5">
     <div class="pagination" *ngIf="replyPaginationMap[comment.id]">

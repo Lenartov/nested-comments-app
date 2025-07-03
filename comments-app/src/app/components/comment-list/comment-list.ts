@@ -15,6 +15,7 @@ export class CommentList implements OnInit {
   @Input() currentId: number = 0;
   @Input() comments: CommentRead[] = [];
 
+
 replyPaginationMap: {
   [parentId: number]: {
     page: number;
@@ -131,4 +132,29 @@ sort(field: keyof CommentRead) {
   get totalPages(): number {
     return Math.ceil(this.totalCount / this.pageSize);
   }
+
+  readonly fileBaseUrl = 'http://localhost:5237';
+
+  fileModalUrl: string | null = null;
+
+  openFile(filePath: string, fileType?: string): void {
+    if(fileType == '.jpg' || fileType == '.png' || fileType == '.gif')
+      this.fileModalUrl = this.fileBaseUrl + filePath;
+    else
+      window.open(this.fileBaseUrl + filePath, '_blank');
+  }
+
+  closeFile(): void {
+    this.fileModalUrl = null;
+  }
+
+  isImageFile(fileUrl: string): boolean {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(fileUrl);
+  }
+
+getFullFileUrl(comment: CommentRead): string | null {
+  if (!comment.filePath) return null;
+  return `${this.fileBaseUrl}${comment.filePath}`;
 }
+}
+
