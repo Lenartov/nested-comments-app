@@ -2,10 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommentRead, CommentListResponse } from '../../models/comment.model';
 import { CommentService } from '../../services/comment.service';
 import { CommonModule } from '@angular/common';
+import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-comment-list',
-  imports: [CommonModule],
+  imports: [CommonModule, SafeHtmlPipe],
   templateUrl: './comment-list.html',
   styleUrls: ['./comment-list.css'],
   standalone: true,

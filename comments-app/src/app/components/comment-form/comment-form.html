@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="comment-form">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" enctype="multipart/form-data" class="comment-form">
   <div class="form-group">
     <label for="userName">User Name</label>
     <input
@@ -64,10 +64,35 @@
       rows="5"
       [class.invalid]="form.controls['message'].invalid && form.controls['message'].touched"
     ></textarea>
-    <div *ngIf="form.controls['message'].invalid && form.controls['message'].touched" class="error">
-      Message text is required.
+    <div *ngIf="form.controls['message'].touched" class="error">
+      <div *ngIf="form.controls['message'].hasError('required')">
+        Message text is required.
+      </div>
+      <div *ngIf="form.controls['message'].hasError('maxlength')">
+        Message is too long.
+      </div>
+      <div *ngIf="form.controls['message'].hasError('scriptTag')">
+  Only &lt;a href="" title=""&gt; &lt;/a&gt;, &lt;code&gt;, &lt;i&gt;, &lt;strong&gt; are allowed.
+      </div>
     </div>
   </div>
+<div class="form-group file-upload">
+  <label for="fileUpload">Attach a file (optional):</label>
+  
+  <button type="button" class="file-button" (click)="fileInput.click()">
+    Choose File
+  </button>
 
+  <span *ngIf="selectedFile" class="file-name">
+    {{ selectedFile.name }}
+  </span>
+  <input
+    type="file"
+    #fileInput
+    (change)="onFileSelected($event)"
+    class="hidden-file-input"
+    accept=".jpg,.png,.gif,.txt"
+  />
+</div>
   <button type="submit" [disabled]="form.invalid">Submit</button>
 </form>

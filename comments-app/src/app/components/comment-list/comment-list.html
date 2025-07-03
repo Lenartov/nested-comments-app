@@ -42,7 +42,7 @@
       <tr>
         <td>{{ comment.userName }}</td>
         <td>{{ comment.email }}</td>
-        <td>{{ comment.message }}</td>
+        <td [innerHTML]="comment.message | safeHtml">{{ comment.message }}</td>
         <td>{{ comment.createdAt | date:'short' }}</td>
         <td>
           <button *ngIf="comment.hasReplies" (click)="toggleReplies(comment)">

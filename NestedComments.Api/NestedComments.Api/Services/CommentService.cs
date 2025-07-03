@@ -56,7 +56,6 @@ public class CommentService : ICommentService
         IQueryable<Comment> query = _context.Comments
             .Where(c => c.ParentCommentId == parentId);
 
-        // Сортування
         query = (sortBy.ToLower(), sortDir.ToLower()) switch
         {
             ("username", "asc") => query.OrderBy(c => c.UserName),
@@ -77,7 +76,6 @@ public class CommentService : ICommentService
             .Take(pageSize)
             .ToListAsync();
 
-        // Додаємо HasReplies
         var commentIds = comments.Select(c => c.Id).ToList();
 
         var repliesCount = await _context.Comments

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CommentService } from '../../services/comment.service';
+import DOMPurify from 'dompurify';
+import { noScriptValidator } from '../../validators/no-script.validator';
 
 @Component({
   selector: 'app-comment-form',
@@ -20,7 +22,7 @@ export class CommentForm {
       email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
       homePage: ['', Validators.pattern('https?://.+')],
       captcha: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$')]],
-      message: ['', [Validators.required, Validators.maxLength(500)]],
+      message: ['', [Validators.required, Validators.maxLength(1000), noScriptValidator]],
       parentCommentId: [null],
     });
   }
@@ -44,7 +46,11 @@ export class CommentForm {
       }
 
       formData.append('Captcha', this.form.value.captcha);
-      formData.append('Message', this.form.value.message);
+      
+      const cleanMessage = DOMPurify.sanitize(this.form.value.message, {
+      ALLOWED_TAGS: ['a', 'code', 'i', 'strong'],
+      ALLOWED_ATTR: ['href', 'title'],});
+      formData.append('Message', cleanMessage);
 
       if (this.form.value.parentCommentId != null) {
         formData.append('ParentCommentId', this.form.value.parentCommentId.toString());
