@@ -3,6 +3,7 @@ import { CommentRead, CommentListResponse } from '../../models/comment.model';
 import { CommentService } from '../../services/comment.service';
 import { CommonModule } from '@angular/common';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
+import { CommentSelectionService } from '../../services/comment-selection.service'
 
 @Component({
   selector: 'app-comment-list',
@@ -34,9 +35,15 @@ replyPaginationMap: {
   currentPage = 1;
   totalCount = 0;
 
-  constructor(private commentService: CommentService) {}
+  selectedParentId: number | null = null;
+
+
+  constructor(private commentService: CommentService, private commentSelection: CommentSelectionService) {}
 
   ngOnInit(): void {
+      this.commentSelection.parentId$.subscribe(id => {
+      this.selectedParentId = id;
+  });
     if(this.comments?.length == 0)
       this.loadComments();
   }
@@ -133,6 +140,19 @@ sort(field: keyof CommentRead) {
     return Math.ceil(this.totalCount / this.pageSize);
   }
 
+  selectedRowIndex: number | null = null;
+
+selectParent(id: number, event: MouseEvent) {
+  this.commentSelection.setParentId(id);
+
+  const target = event.currentTarget as HTMLElement;
+  if (target) {
+    target.classList.add('blink');
+    setTimeout(() => {
+      target.classList.remove('blink');
+    }, 200);
+  }
+}
   readonly fileBaseUrl = 'http://localhost:5237';
 
   fileModalUrl: string | null = null;

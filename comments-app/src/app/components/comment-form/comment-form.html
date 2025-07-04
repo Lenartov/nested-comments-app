@@ -1,3 +1,12 @@
+<div class="center-wrapper">
+
+<div class="parent-id-wrapper">
+    <label *ngIf="parentId == null" for="parentIdInput">If you would like to respond, please click on the comment in the table below</label>
+  <label *ngIf="parentId != null" for="parentIdInput">Now responding to user with ID:</label>
+  <input *ngIf="parentId != null" id="parentIdInput" type="text" [value]="parentId ?? ''" readonly>
+  <button *ngIf="parentId != null" type="button" (click)="clearParentId()">Write new comment</button>
+</div>
+</div>
 <form [formGroup]="form" (ngSubmit)="onSubmit()" enctype="multipart/form-data" class="comment-form">
   <div class="form-group">
     <label for="userName">User Name</label>

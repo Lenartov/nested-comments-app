@@ -6,6 +6,7 @@ import DOMPurify from 'dompurify';
 import { noScriptValidator } from '../../validators/no-script.validator';
 import { CaptchaService, CaptchaResponse } from '../../services/captcha.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { CommentSelectionService } from '../../services/comment-selection.service';
 
 @Component({
   selector: 'app-comment-form',
@@ -19,10 +20,17 @@ export class CommentForm {
   captchaId: string = '';
   form!: FormGroup;
   selectedFile: File | null = null;
+  parentId: number | null = null;
 
-  constructor(private fb: FormBuilder, private commentService: CommentService,   private captchaService: CaptchaService,  private sanitizer: DomSanitizer) {}
+  constructor(private fb: FormBuilder, private commentService: CommentService,   private captchaService: CaptchaService,  private sanitizer: DomSanitizer, private commentSelectionService: CommentSelectionService) {}
 
   ngOnInit(): void {
+
+      this.commentSelectionService.parentId$.subscribe(id => {
+      this.parentId = id;
+      //this.form.get('parentCommentId')?.setValue(id, { emitEvent: false });
+    });
+    
         this.form = this.fb.group({
       userName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$'), Validators.maxLength(30)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
@@ -44,6 +52,9 @@ loadCaptcha() {
     reader.readAsDataURL(blob);
   });
 }
+  clearParentId() {
+    this.commentSelectionService.clearParentId();
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -55,6 +66,10 @@ loadCaptcha() {
   onSubmit() {
     if (this.form.valid) {
       const formData = new FormData();
+
+      if (this.parentId !== null) {
+      formData.append('ParentCommentId', this.parentId.toString());
+    }
 
       formData.append('UserName', this.form.value.userName);
       formData.append('Email', this.form.value.email);
@@ -69,10 +84,6 @@ loadCaptcha() {
       ALLOWED_TAGS: ['a', 'code', 'i', 'strong'],
       ALLOWED_ATTR: ['href', 'title'],});
       formData.append('Message', cleanMessage);
-
-      if (this.form.value.parentCommentId != null) {
-        formData.append('ParentCommentId', this.form.value.parentCommentId.toString());
-      }
 
       if (this.selectedFile) {
         formData.append('File', this.selectedFile, this.selectedFile.name);

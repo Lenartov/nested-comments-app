@@ -40,7 +40,7 @@
   </thead>
   <tbody>
     <ng-container *ngFor="let comment of comments">
-      <tr>
+      <tr (click)="selectParent(comment.id, $event)">
         <td>{{ comment.userName }}</td>
         <td>{{ comment.email }}</td>
         <td>{{ comment.createdAt | date:'short' }}</td>
