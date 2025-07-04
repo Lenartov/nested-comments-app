@@ -9,7 +9,7 @@ public class CaptchaController : ControllerBase
     {
         var code = CaptchaGenerator.GenerateCaptchaCode();
         HttpContext.Session.SetString("CaptchaCode", code);
-
+        Console.WriteLine("Set string " + HttpContext.Session.GetString("CaptchaCode"));
         var imageBytes = CaptchaGenerator.GenerateCaptchaImage(code);
         return File(imageBytes, "image/png");
     }

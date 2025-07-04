@@ -30,10 +30,10 @@ export class CommentService {
       .set('page', page.toString())
       .set('pageSize', 5);
 
-    return this.http.get<CommentListResponse>(this.apiUrl, { params });
+    return this.http.get<CommentListResponse>(this.apiUrl, { params , withCredentials: true });
   }
 
   postComment(formData: FormData) {
-  return this.http.post<CommentRead>(this.apiUrl, formData);
+  return this.http.post<CommentRead>(this.apiUrl, formData, { withCredentials: true });
 }
 }

@@ -6,9 +6,9 @@
       type="text"
       formControlName="userName"
       placeholder="Enter user name"
-      [class.invalid]="form.controls['userName'].invalid && form.controls['userName'].touched"
+      [class.invalid]="form?.get('userName')?.invalid && form?.get('userName')?.touched"
     />
-    <div *ngIf="form.controls['userName'].invalid && form.controls['userName'].touched" class="error">
+    <div *ngIf="form?.get('userName')?.invalid && form?.get('userName')?.touched" class="error">
       User Name is required and must contain only Latin letters and digits.
     </div>
   </div>
@@ -20,9 +20,9 @@
       type="email"
       formControlName="email"
       placeholder="Enter email"
-      [class.invalid]="form.controls['email'].invalid && form.controls['email'].touched"
+      [class.invalid]="form?.get('email')?.invalid && form?.get('email')?.touched"
     />
-    <div *ngIf="form.controls['email'].invalid && form.controls['email'].touched" class="error">
+    <div *ngIf="form?.get('email')?.invalid && form?.get('email')?.touched" class="error">
       Valid email is required.
     </div>
   </div>
@@ -34,23 +34,32 @@
       type="url"
       formControlName="homePage"
       placeholder="Enter homepage URL"
-      [class.invalid]="form.controls['homePage'].invalid && form.controls['homePage'].touched"
+      [class.invalid]="form?.get('homePage')?.invalid && form?.get('homePage')?.touched"
     />
-    <div *ngIf="form.controls['homePage'].invalid && form.controls['homePage'].touched" class="error">
+    <div *ngIf="form?.get('homePage')?.invalid && form?.get('homePage')?.touched" class="error">
       Invalid URL format.
     </div>
   </div>
 
   <div class="form-group">
     <label for="captcha">Captcha</label>
+
+    <div class="captcha-image-wrapper">
+<img *ngIf="captchaImage" [src]="captchaImage" alt="captcha" class="captcha-image" />
+
+      <button type="button" class="refresh-button" (click)="loadCaptcha()" aria-label="Refresh captcha">
+        🔄
+      </button>
+    </div>
+
     <input
       id="captcha"
       type="text"
       formControlName="captcha"
       placeholder="Enter captcha"
-      [class.invalid]="form.controls['captcha'].invalid && form.controls['captcha'].touched"
+      [class.invalid]="form?.get('captcha')?.invalid && form?.get('captcha')?.touched"
     />
-    <div *ngIf="form.controls['captcha'].invalid && form.controls['captcha'].touched" class="error">
+    <div *ngIf="form?.get('captcha')?.invalid && form?.get('captcha')?.touched" class="error">
       Captcha is required and must contain only Latin letters and digits.
     </div>
   </div>
@@ -62,37 +71,37 @@
       formControlName="message"
       placeholder="Write your comment"
       rows="5"
-      [class.invalid]="form.controls['message'].invalid && form.controls['message'].touched"
+      [class.invalid]="form?.get('message')?.invalid && form?.get('message')?.touched"
     ></textarea>
-    <div *ngIf="form.controls['message'].touched" class="error">
-      <div *ngIf="form.controls['message'].hasError('required')">
+    <div *ngIf="form?.get('message')?.touched" class="error">
+      <div *ngIf="form?.get('message')?.hasError('required')">
         Message text is required.
       </div>
-      <div *ngIf="form.controls['message'].hasError('maxlength')">
+      <div *ngIf="form?.get('message')?.hasError('maxlength')">
         Message is too long.
       </div>
-      <div *ngIf="form.controls['message'].hasError('scriptTag')">
-  Only &lt;a href="" title=""&gt; &lt;/a&gt;, &lt;code&gt;, &lt;i&gt;, &lt;strong&gt; are allowed.
+      <div *ngIf="form?.get('message')?.hasError('scriptTag')">
+        Only &lt;a href="" title=""&gt; &lt;/a&gt;, &lt;code&gt;, &lt;i&gt;, &lt;strong&gt; are allowed.
       </div>
     </div>
   </div>
-<div class="form-group file-upload">
-  <label for="fileUpload">Attach a file (optional):</label>
-  
-  <button type="button" class="file-button" (click)="fileInput.click()">
-    Choose File
-  </button>
 
-  <span *ngIf="selectedFile" class="file-name">
-    {{ selectedFile.name }}
-  </span>
-  <input
-    type="file"
-    #fileInput
-    (change)="onFileSelected($event)"
-    class="hidden-file-input"
-    accept=".jpg,.png,.gif,.txt"
-  />
-</div>
-  <button type="submit" [disabled]="form.invalid">Submit</button>
+  <div class="form-group file-upload">
+    <label for="fileUpload">Attach a file (optional):</label>
+    <button type="button" class="file-button" (click)="fileInput.click()">
+      Choose File
+    </button>
+    <span *ngIf="selectedFile" class="file-name">
+      {{ selectedFile.name }}
+    </span>
+    <input
+      type="file"
+      #fileInput
+      (change)="onFileSelected($event)"
+      class="hidden-file-input"
+      accept=".jpg,.png,.gif,.txt"
+    />
+  </div>
+
+  <button type="submit" [disabled]="form?.invalid">Submit</button>
 </form>

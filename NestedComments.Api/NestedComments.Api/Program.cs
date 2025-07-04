@@ -19,10 +19,14 @@ namespace NestedComments.Api
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
+
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None; 
             });
+
             builder.Services.AddScoped<ICaptchaService, CaptchaService>();
             builder.Services.AddScoped<ICommentSanitizer, CommentSanitizer>();
             builder.Services.AddScoped<IFileService, FileService>();
@@ -33,8 +37,9 @@ namespace NestedComments.Api
                     policy =>
                     {
                         policy.WithOrigins("http://localhost:4200")
-                              .AllowAnyHeader()
-                              .AllowAnyMethod();
+                        .AllowCredentials()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                     });
             });
 
@@ -46,11 +51,11 @@ namespace NestedComments.Api
                 app.UseSwaggerUI();
             }
 
-            app.UseCors("AllowAngularApp");
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseAuthorization();
+            app.UseCors("AllowAngularApp");
             app.UseSession();
+            app.UseAuthorization();
             app.MapControllers();
             app.Run();
         }

@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { CommentService } from '../../services/comment.service';
 import DOMPurify from 'dompurify';
 import { noScriptValidator } from '../../validators/no-script.validator';
+import { CaptchaService, CaptchaResponse } from '../../services/captcha.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-comment-form',
@@ -13,11 +15,15 @@ import { noScriptValidator } from '../../validators/no-script.validator';
   styleUrls: ['./comment-form.css'],
 })
 export class CommentForm {
-  form: FormGroup;
+  captchaImage: SafeUrl | null = null;
+  captchaId: string = '';
+  form!: FormGroup;
   selectedFile: File | null = null;
 
-  constructor(private fb: FormBuilder, private commentService: CommentService) {
-    this.form = this.fb.group({
+  constructor(private fb: FormBuilder, private commentService: CommentService,   private captchaService: CaptchaService,  private sanitizer: DomSanitizer) {}
+
+  ngOnInit(): void {
+        this.form = this.fb.group({
       userName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$'), Validators.maxLength(30)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
       homePage: ['', Validators.pattern('https?://.+')],
@@ -25,7 +31,19 @@ export class CommentForm {
       message: ['', [Validators.required, Validators.maxLength(1000), noScriptValidator]],
       parentCommentId: [null],
     });
+
+    this.loadCaptcha();
   }
+
+loadCaptcha() {
+  this.captchaService.getCaptcha().subscribe(blob => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      this.captchaImage = this.sanitizer.bypassSecurityTrustUrl(reader.result as string);
+    };
+    reader.readAsDataURL(blob);
+  });
+}
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -65,10 +83,12 @@ export class CommentForm {
           console.log('Comment added', res);
           this.form.reset();
           this.selectedFile = null;
+          this.loadCaptcha();
         },
-        error: (err) => {
-          console.error('Error adding a comment', err);
-        },
+    error: (err) => {
+      console.error('Comment post failed:', err);
+      this.loadCaptcha();
+    }
       });
     }
   }

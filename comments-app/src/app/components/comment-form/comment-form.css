@@ -104,3 +104,24 @@ button[type='submit']:disabled {
   font-size: 0.95rem;
   font-style: italic;
 }
+
+.captcha-image-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.captcha-image {
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.refresh-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}

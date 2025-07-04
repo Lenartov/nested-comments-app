@@ -58,8 +58,8 @@ namespace NestedComments.Api.Controllers
                 return BadRequest(ModelState);
 
 
-           // if (!_captchaService.ValidateCaptcha(HttpContext, dto.Captcha))
-           //     return BadRequest(new { error = "Invalid CAPTCHA" });
+            if (!_captchaService.ValidateCaptcha(HttpContext, dto.Captcha))
+                return BadRequest(new { error = "Invalid CAPTCHA" });
 
             if(!_commentSanitizer.IsContainValidTags(dto.Message))
                 return BadRequest(new { error = "Message contains invalid content" });
