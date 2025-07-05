@@ -25,6 +25,9 @@ export class CommentFormComponent {
   parentId: number | null = null;
   selectedFile: File | null = null;
 
+  message: string | null = null;  // текст повідомлення
+  isError: boolean = false;       // чи помилка це чи успіх
+
   constructor(private fb: FormBuilder,
     private commentService: CommentService,
     private commentSelectionService: CommentSelectionService,
@@ -88,12 +91,18 @@ export class CommentFormComponent {
         this.form.reset();
         this.selectedFile = null;
         this.reloadCaptcha();
+
+        this.message = 'Success!';
+        this.isError = false;
       },
       error: (err) => {
         console.error('Comment post failed:', err);
         this.form.reset();
         this.selectedFile = null;
         this.reloadCaptcha();
+
+        this.message = 'Error: ' + err.error.error;
+        this.isError = true;
       }});
   }
 }
