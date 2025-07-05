@@ -6,6 +6,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
 }
 
 .form-group {
@@ -23,18 +24,23 @@ label {
 input[type='text'],
 input[type='email'],
 input[type='url'],
-textarea {
+textarea,
+.parent-id-wrapper input {
   padding: 10px 12px;
   border: 1.5px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  background-color: #fafafa;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
 }
 
 input[type='text']:focus,
 input[type='email']:focus,
 input[type='url']:focus,
-textarea:focus {
+textarea:focus,
+.parent-id-wrapper input:focus {
   outline: none;
   border-color: #4a90e2;
   box-shadow: 0 0 6px #4a90e2aa;
@@ -51,19 +57,30 @@ textarea:focus {
   margin-top: 4px;
 }
 
-button[type='submit'] {
+button[type='submit'],
+.file-button,
+.parent-id-wrapper button {
   background-color: #4a90e2;
   color: white;
-  padding: 12px 24px;
   border: none;
-  font-size: 1.1rem;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s ease;
+  font-size: 1rem;
+  padding: 10px 20px;
+  user-select: none;
+  box-sizing: border-box;
 }
 
-button[type='submit']:hover:not(:disabled) {
+button[type='submit'] {
+  font-size: 1.1rem;
+  padding: 12px 24px;
+}
+
+button[type='submit']:hover:not(:disabled),
+.file-button:hover,
+.parent-id-wrapper button:hover {
   background-color: #357abd;
 }
 
@@ -74,23 +91,6 @@ button[type='submit']:disabled {
 
 .file-upload {
   position: relative;
-}
-
-.file-button {
-  background-color: #4a90e2;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  font-size: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-  width: fit-content;
-}
-
-.file-button:hover {
-  background-color: #357abd;
 }
 
 .hidden-file-input {
@@ -143,19 +143,6 @@ button[type='submit']:disabled {
 .parent-id-wrapper input {
   flex-shrink: 0;
   width: 80px;
-  padding: 10px 12px;
-  border: 1.5px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: #fafafa;
-  color: #333;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.parent-id-wrapper input:focus {
-  outline: none;
-  border-color: #4a90e2;
-  box-shadow: 0 0 6px #4a90e2aa;
 }
 
 .parent-id-wrapper input[readonly] {
@@ -163,21 +150,7 @@ button[type='submit']:disabled {
 }
 
 .parent-id-wrapper button {
-  background-color: #4a90e2;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  font-size: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
   flex-shrink: 0;
-  user-select: none;
-}
-
-.parent-id-wrapper button:hover {
-  background-color: #357abd;
 }
 
 .parent-id-wrapper button:focus {

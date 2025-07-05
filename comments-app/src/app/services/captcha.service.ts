@@ -16,7 +16,7 @@ export class CaptchaService {
   constructor(private http: HttpClient) {}
 
   getCaptcha(): Observable<Blob> {
-    return this.http.get('http://localhost:5237/api/Captcha', {
+    return this.http.get(this.apiUrl, {
       responseType: 'blob', 
       withCredentials: true
     });

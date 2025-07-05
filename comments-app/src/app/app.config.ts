@@ -3,7 +3,7 @@ import { provideRouter, withEnabledBlockingInitialNavigation } from '@angular/ro
 import { BrowserModule } from '@angular/platform-browser';
 import { InjectionToken } from '@angular/core';
 
-import { CommentForm } from './components/comment-form/comment-form';
+import { CommentFormComponent } from './components/comment-form/comment-form.component';
 import { CommentList } from './components/comment-list/comment-list';
 
 export const APP_CONFIG = new InjectionToken<ApplicationConfig>('app.config');
@@ -14,7 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       [
         { path: '', component: CommentList },
-        { path: 'add', component: CommentForm }
+        { path: 'add', component: CommentFormComponent }
       ],
       withEnabledBlockingInitialNavigation()
     )
