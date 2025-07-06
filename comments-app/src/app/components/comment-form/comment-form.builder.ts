@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { noScriptValidator } from '../../validators/no-script.validator';
+import { htmlTagValidator } from '../../validators/no-script.validator';
 
 export class BuildCommentForm {
   form: FormGroup;
@@ -14,7 +14,7 @@ export class BuildCommentForm {
       email: ['', [Validators.required, Validators.email, Validators.maxLength(50)]],
       homePage: ['', Validators.pattern('https?://.+')],
       captcha: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$')]],
-      message: ['', [Validators.required, Validators.maxLength(1000), noScriptValidator]],
+      message: ['', [Validators.required, Validators.maxLength(1000), htmlTagValidator]],
       parentCommentId: [null],
     });
   }

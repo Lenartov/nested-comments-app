@@ -25,8 +25,8 @@ export class CommentFormComponent {
   parentId: number | null = null;
   selectedFile: File | null = null;
 
-  message: string | null = null;  // текст повідомлення
-  isError: boolean = false;       // чи помилка це чи успіх
+  message: string | null = null;  
+  isError: boolean = false;
 
   constructor(private fb: FormBuilder,
     private commentService: CommentService,

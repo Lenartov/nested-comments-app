@@ -79,17 +79,20 @@
       formControlName="message"
       placeholder="Write your comment"
       rows="5"
-      [class.invalid]="form.get('message')?.invalid && form.get('message')?.touched"
+      [class.invalid]="form.get('message')?.invalid && (form.get('message')?.touched || form.get('message')?.dirty)"
     ></textarea>
-    <div *ngIf="form?.get('message')?.touched" class="error">
+    <div *ngIf="form?.get('message')?.touched || form.get('message')?.dirty" class="error">
       <div *ngIf="form?.get('message')?.hasError('required')">
         Message text is required.
       </div>
       <div *ngIf="form?.get('message')?.hasError('maxlength')">
         Message is too long.
       </div>
-      <div *ngIf="form?.get('message')?.hasError('scriptTag')">
+      <div *ngIf="form?.get('message')?.hasError('disallowedTag')">
         Only &lt;a href="" title=""&gt; &lt;/a&gt;, &lt;code&gt;, &lt;i&gt;, &lt;strong&gt; are allowed.
+      </div>
+      <div *ngIf="form?.get('message')?.hasError('unclosedTag')">
+        Unclosed Tag.
       </div>
     </div>
   </div>
