@@ -11,26 +11,38 @@ export class CommentService {
 
   constructor(private http: HttpClient) {}
 
-  getComments(page: number = 1): Observable<CommentListResponse> {
-
-        const params = new HttpParams()
-      .set('sortBy', 'CreatedAt')
-      .set('sortDir', 'desc')
-      .set('page', page.toString())
-      .set('pageSize', 5);
-
+  getComments(parentId: number = -1, pageNumber: number = 1): Observable<CommentListResponse> {
+    let params = new HttpParams();
+    if(parentId <= 0)
+    {
+      params = this.getMainCommentsParams(pageNumber);
+    }
+    else
+    {
+      params = this.getRepliesParams(parentId, pageNumber);
+    }
     return this.http.get<CommentListResponse>(this.apiUrl, {params});
   }
-  
-    getReplies(parentId: number, page: number = 1): Observable<CommentListResponse> {
+
+  getMainCommentsParams(pageNumber: number = 1): HttpParams{
       const params = new HttpParams()
-      .set('parentId', parentId.toString())
       .set('sortBy', 'CreatedAt')
       .set('sortDir', 'desc')
-      .set('page', page.toString())
+      .set('page', pageNumber)
       .set('pageSize', 5);
 
-    return this.http.get<CommentListResponse>(this.apiUrl, { params , withCredentials: true });
+      return params;
+  }
+
+    getRepliesParams(parentId: number, pageNumber: number = 1): HttpParams{
+      const params = new HttpParams()
+      .set('parentId', parentId)
+      .set('sortBy', 'CreatedAt')
+      .set('sortDir', 'desc')
+      .set('page', pageNumber)
+      .set('pageSize', 5);
+
+      return params;
   }
 
   postComment(formData: FormData) {

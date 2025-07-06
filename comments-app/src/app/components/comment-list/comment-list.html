@@ -1,12 +1,10 @@
-<div class="pagination" *ngIf="currentId == 0">
+<div class="pagination">
   <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
-
-  <button *ngFor="let page of [].constructor(totalPages); let i = index"
-          (click)="goToPage(i + 1)"
-          [class.active]="currentPage === i + 1">
-    {{ i + 1 }}
-  </button>
-
+<button *ngFor="let page of pages"
+        (click)="goToPage(page)"
+        [class.active]="currentPage === page">
+  {{ page }}
+</button>
   <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
 </div>
 <table class="comments-table">
@@ -44,70 +42,36 @@
         <td>{{ comment.userName }}</td>
         <td>{{ comment.email }}</td>
         <td>{{ comment.createdAt | date:'short' }}</td>
-        
         <td [innerHTML]="comment.message | safeHtml">{{ comment.message }}</td>
         <td>
-          <button *ngIf="comment.hasReplies" (click)="toggleReplies(comment)">
+          <button *ngIf="comment.hasReplies" (click)="toggleReplies(comment.id);">
             {{ isExpanded(comment) ? 'Hide Replies' : 'Show Replies' }}
           </button>
         </td>
         <td>
-  <button 
-    *ngIf="comment.filePath" 
-    (click)="openFile(comment.filePath, comment.fileExtension)"
-    class="btn btn-sm btn-primary">
-    Open File
-  </button>
-</td>
-</tr>
-<div *ngIf="fileModalUrl" class="modal-overlay" (click)="closeFile()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <ng-container *ngIf="isImageFile(fileModalUrl); else notImage">
-      <img [src]="fileModalUrl" alt="Файл" />
-    </ng-container>
-    <ng-template #notImage>
-      <iframe [src]="fileModalUrl" frameborder="0" width="100%" height="500px"></iframe>
-    </ng-template>
-  </div>
-</div>
+          <button 
+            *ngIf="comment.filePath" 
+            (click)="openFile(comment.filePath, comment.fileExtension)"
+            class="btn btn-sm btn-primary">
+            Open File
+          </button>
+        </td>
+      </tr>
       <tr *ngIf="isExpanded(comment)" class="replies-row">
-  <td colspan="5">
-    <div class="pagination" *ngIf="replyPaginationMap[comment.id]">
-      <button 
-        (click)="changeReplyPage(comment.id, replyPaginationMap[comment.id].page - 1)"
-        [disabled]="replyPaginationMap[comment.id].page === 1"
-      >
-        Prev
-      </button>
-
-      <button
-        *ngFor="let p of [].constructor(replyPaginationMap[comment.id].totalPages); let i = index"
-        (click)="changeReplyPage(comment.id, i + 1)"
-        [class.active]="replyPaginationMap[comment.id].page === i + 1"
-      >
-        {{ i + 1 }}
-      </button>
-
-      <button 
-        (click)="changeReplyPage(comment.id, replyPaginationMap[comment.id].page + 1)"
-        [disabled]="replyPaginationMap[comment.id].page === replyPaginationMap[comment.id].totalPages"
-      >
-        Next
-      </button>
-    </div>
-    <app-comment-list 
-      [comments]="commentRepliesMap[comment.id]"
-      [currentId]="comment.id"
-      *ngIf="commentRepliesMap[comment.id]?.length"
-    ></app-comment-list>
-
-    <ng-template #noReplies>
-      <div>No replies found.</div>
-    </ng-template>
-
-
-  </td>
-</tr>
+        <td colspan="5">
+          <app-comment-list [currentParentId]="comment.id"></app-comment-list>
+          <ng-template #noReplies>
+            <div>No replies found.</div>
+          </ng-template>
+        </td>
+      </tr>
     </ng-container>
   </tbody>
 </table>
+<div *ngIf="fileModalUrl" class="modal-overlay" (click)="closeFile()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <ng-container *ngIf="fileModalUrl && fileService.isImage(fileModalUrl);">
+      <img [src]="fileModalUrl" alt="File" />
+    </ng-container>
+  </div>
+</div>
