@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { CaptchaConfigService } from './captcha-config.service';
 
 export interface CaptchaResponse {
   captchaId: string;
@@ -11,12 +12,10 @@ export interface CaptchaResponse {
   providedIn: 'root'
 })
 export class CaptchaService {
-  private readonly apiUrl = 'http://localhost:5237/api/Captcha';
-
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private config: CaptchaConfigService) {}
 
   getCaptcha(): Observable<Blob> {
-    return this.http.get(this.apiUrl, {
+    return this.http.get(this.config.apiUrl, {
       responseType: 'blob', 
       withCredentials: true
     });

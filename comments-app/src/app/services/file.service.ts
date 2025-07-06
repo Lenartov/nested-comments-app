@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
+import { FileConfigService } from './file-config.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileService {
-  private readonly fileBaseUrl = 'http://localhost:5237';
+  constructor(private config: FileConfigService) {}
 
   getFullUrl(filePath: string): string {
-    return `${this.fileBaseUrl}${filePath}`;
+    return `${this.config.baseUrl}${filePath}`;
   }
 
   isImage(filePath: string): boolean {
-    return /\.(jpg|jpeg|png|gif|)$/i.test(this.getFullUrl(filePath));
-  }
+    const regex = new RegExp(`\\.(${this.config.imageExtensions.join('|')})$`, 'i');
+    return regex.test(filePath);  }
 
   openFile(filePath: string): void {
       window.open(this.getFullUrl(filePath), '_blank');

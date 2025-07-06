@@ -7,7 +7,7 @@ import { CommentSelectionService } from '../../services/comment-selection.servic
 import { Subscription } from 'rxjs';
 import { FileService } from '../../services/file.service'
 import { sortComments } from '../../Utils/sort-comment';
-
+import { CommentConfigService } from '../../services/comment-config.service';
 
 @Component({
   selector: 'app-comment-list',
@@ -17,16 +17,15 @@ import { sortComments } from '../../Utils/sort-comment';
   standalone: true,
 })
 export class CommentList implements OnInit, OnDestroy {
-  @Input() currentParentId = 0;
+  @Input() currentParentId?: number;
   @Input() comments: CommentRead[] = [];
 
   expandedComments = new Set<number>();
 
+  currentPage: number = 1;
   sortBy: keyof CommentRead = 'createdAt';
   sortDirection: 'asc' | 'desc' = 'desc';
-
-  pageSize = 5;
-  currentPage = 1;
+  
   totalCommentsCount = 0;
 
   selectedParentId: number | null = null;
@@ -34,9 +33,13 @@ export class CommentList implements OnInit, OnDestroy {
 
   fileModalUrl: string | null = null;
 
-  constructor(private commentService: CommentService, private commentSelection: CommentSelectionService, public fileService: FileService) {}
+  constructor(private commentService: CommentService, private commentSelection: CommentSelectionService, public fileService: FileService, private config: CommentConfigService) {}
 
   ngOnInit(): void {
+    this.currentPage = this.config.DEFAULT_PAGE;
+    this.sortBy = this.config.SORT_BY;
+    this.sortDirection = this.config.SORT_DIR;
+
     this.parentIdSub = this.commentSelection.parentId$.subscribe((id) => {this.selectedParentId = id;});
     this.loadComments();
   }
@@ -90,7 +93,7 @@ toggleReplies(id: number): void {
   }
 
   get totalPages(): number {
-    return Math.ceil(this.totalCommentsCount / this.pageSize);
+    return Math.ceil(this.totalCommentsCount / this.config.PAGE_SIZE);
   }
 
   selectParent(id: number, event: MouseEvent): void {
