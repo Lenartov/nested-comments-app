@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NestedComments.Api.Data;
 using NestedComments.Api.Services;
+using NestedComments.Api.Services.Interfaces;
 using NestedComments.Api.Settings;
 
 namespace NestedComments.Api
@@ -22,6 +23,9 @@ namespace NestedComments.Api
             builder.Services.AddScoped<ICommentSanitizer, CommentSanitizer>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddSingleton<ICommentQueueService, CommentQueueService>();
+            builder.Services.AddHostedService<QueuedCommentProcessor>();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngularApp",

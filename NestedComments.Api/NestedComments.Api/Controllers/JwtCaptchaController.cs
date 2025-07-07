@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NestedComments.Api.Dtos;
+using NestedComments.Api.Services.Interfaces;
 
 namespace NestedComments.Api.Controllers
 {

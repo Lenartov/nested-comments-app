@@ -1,4 +1,5 @@
 ﻿using Ganss.Xss;
+using NestedComments.Api.Services.Interfaces;
 
 namespace NestedComments.Api.Services
 {

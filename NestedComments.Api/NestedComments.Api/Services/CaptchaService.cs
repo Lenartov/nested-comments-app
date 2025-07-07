@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NestedComments.Api.Dtos;
+using NestedComments.Api.Services.Interfaces;
 using NestedComments.Api.Settings;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;

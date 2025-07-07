@@ -2,30 +2,21 @@
 using NestedComments.Api.Data;
 using NestedComments.Api.Dtos;
 using NestedComments.Api.Models;
+using NestedComments.Api.Services.Interfaces;
 
 namespace NestedComments.Api.Services;
 
 public class CommentService : ICommentService
 {
     private readonly AppDbContext _context;
-    private readonly ICommentSanitizer _sanitizer;
 
-    public CommentService(AppDbContext context, ICommentSanitizer sanitizer)
+    public CommentService(AppDbContext context)
     {
         _context = context;
-        _sanitizer = sanitizer;
     }
 
     public async Task<Comment> CreateCommentAsync(CommentCreateDto dto, string? filePath, string fileExtension)
     {
-        /*string sanitizedMessage = _sanitizer.Sanitize(dto.Message);
-        string sanitizedEmail = _sanitizer.Sanitize(dto.Email);
-        string sanitizedUserName = _sanitizer.Sanitize(dto.UserName);
-        string? sanitizedHomePage = null;
-        
-        if(dto.HomePage is not null)
-            sanitizedHomePage = _sanitizer.Sanitize(dto.HomePage);*/
-
         Comment comment = new Comment
         {
             UserName = dto.UserName,
@@ -44,7 +35,31 @@ public class CommentService : ICommentService
         return comment;
     }
 
+    public async Task<Comment[]> CreateCommentsAsync(CommentQueueItem[] commentsData)
+    {
+        Comment[] comments = new Comment[commentsData.Length];
 
+        for (int i = 0; i < commentsData.Length; i++)
+        {
+            comments[i] = new Comment
+            {
+                UserName = commentsData[i].Dto.UserName,
+                Email = commentsData[i].Dto.Email,
+                HomePage = commentsData[i].Dto.HomePage,
+                Message = commentsData[i].Dto.Message,
+                CreatedAt = DateTime.UtcNow,
+                ParentCommentId = commentsData[i].Dto.ParentCommentId,
+                FilePath = commentsData[i].SavedFilePath,
+                FileExtension = commentsData[i].FileExtension
+            };
+        }
+
+        _context.Comments.AddRange(comments);
+        await _context.SaveChangesAsync();
+
+        return comments;
+
+    }
 
     public async Task<(IEnumerable<CommentReadDto> items, int totalCount)> GetCommentsAsync(
         int? parentId = null,

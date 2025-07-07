@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NestedComments.Api.Dtos;
-using NestedComments.Api.Services;
+using NestedComments.Api.Services.Interfaces;
+using NestedComments.Api.Data;
 
 namespace NestedComments.Api.Controllers
 {
@@ -11,16 +12,19 @@ namespace NestedComments.Api.Controllers
         private readonly IFileService _fileService;
         private readonly ICommentService _commentService;
         private readonly ICommentSanitizer _commentSanitizer;
+        private readonly ICommentQueueService _commentQueueService;
 
         public CommentsController(
             IFileService fileService,
             ICommentService commentService,
-            ICommentSanitizer commentSanitizer
+            ICommentSanitizer commentSanitizer,
+            ICommentQueueService commentQueueService
             )
         {
             _fileService = fileService;
             _commentService = commentService;
             _commentSanitizer = commentSanitizer;
+            _commentQueueService = commentQueueService;
         }
 
         [HttpGet]
@@ -34,9 +38,6 @@ namespace NestedComments.Api.Controllers
             var (items, totalCount) = await _commentService.GetCommentsAsync(parentId, sortBy, sortDir, page, pageSize);
             return Ok(new { items, totalCount });
         }
-
-
-
 
         [HttpPost]
         [Consumes("multipart/form-data")]
@@ -73,9 +74,14 @@ namespace NestedComments.Api.Controllers
                 }
             }
 
+            _commentQueueService.Enqueue(new CommentQueueItem
+            {
+                Dto = dto,
+                SavedFilePath = savedFilePath,
+                FileExtension = fileExtension
+            });
 
-            var commentReadDto = _commentService.MapToReadDto(await _commentService.CreateCommentAsync(dto, savedFilePath, fileExtension));
-            return Ok(commentReadDto);
+            return Accepted(new { status = "Queued for processing" });
         }
 
     }

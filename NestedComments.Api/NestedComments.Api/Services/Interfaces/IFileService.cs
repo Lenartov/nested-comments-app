@@ -1,4 +1,4 @@
-﻿namespace NestedComments.Api.Services
+﻿namespace NestedComments.Api.Services.Interfaces
 {
     public interface IFileService
     {
