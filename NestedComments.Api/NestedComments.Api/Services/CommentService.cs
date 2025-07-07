@@ -15,18 +15,18 @@ public class CommentService : ICommentService
         _context = context;
     }
 
-    public async Task<Comment> CreateCommentAsync(CommentCreateDto dto, string? filePath, string fileExtension)
+    public async Task<Comment> CreateCommentAsync(CommentQueueItem commentData)
     {
         Comment comment = new Comment
         {
-            UserName = dto.UserName,
-            Email = dto.Email,
-            HomePage = dto.HomePage,
-            Message = dto.Message,
+            UserName = commentData.Dto.UserName,
+            Email = commentData.Dto.Email,
+            HomePage = commentData.Dto.HomePage,
+            Message = commentData.Dto.Message,
             CreatedAt = DateTime.UtcNow,
-            ParentCommentId = dto.ParentCommentId,
-            FilePath = filePath,
-            FileExtension = fileExtension
+            ParentCommentId = commentData.Dto.ParentCommentId,
+            FilePath = commentData.FilePath,
+            FileExtension = commentData.FileExtension
         };
 
         _context.Comments.Add(comment);
@@ -49,7 +49,7 @@ public class CommentService : ICommentService
                 Message = commentsData[i].Dto.Message,
                 CreatedAt = DateTime.UtcNow,
                 ParentCommentId = commentsData[i].Dto.ParentCommentId,
-                FilePath = commentsData[i].SavedFilePath,
+                FilePath = commentsData[i].FilePath,
                 FileExtension = commentsData[i].FileExtension
             };
         }
@@ -82,7 +82,8 @@ public class CommentService : ICommentService
             _ => query.OrderByDescending(c => c.CreatedAt)
         };
 
-        if (page <= 0) page = 1;
+        if (page <= 0) 
+            page = 1;
 
         int totalCount = await query.CountAsync();
 
@@ -99,28 +100,13 @@ public class CommentService : ICommentService
             .Select(g => new { ParentId = g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.ParentId!.Value, x => x.Count);
 
-        var commentDtos = comments.Select(c =>
+        var commentDtos = comments.Select(comment =>
         {
-            var dto = MapToReadDto(c);
-            dto.HasReplies = repliesCount.ContainsKey(c.Id);
+            CommentReadDto dto = comment;
+            dto.HasReplies = repliesCount.ContainsKey(comment.Id);
             return dto;
         });
 
         return (commentDtos, totalCount);
-    }
-
-    public CommentReadDto MapToReadDto(Comment comment)
-    {
-        return new CommentReadDto
-        {
-            Id = comment.Id,
-            UserName = comment.UserName,
-            Message = comment.Message,
-            Email = comment.Email,
-            CreatedAt = comment.CreatedAt,
-            HomePage = comment.HomePage,
-            FilePath = comment.FilePath,
-            FileExtension = comment.FileExtension,
-        };
     }
 }

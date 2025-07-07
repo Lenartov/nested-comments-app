@@ -18,11 +18,13 @@ namespace NestedComments.Api
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddMemoryCache();
             builder.Services.Configure<CaptchaSettings>(builder.Configuration.GetSection("CaptchaSettings"));
             builder.Services.AddScoped<ICaptchaService, CaptchaService>();
             builder.Services.AddScoped<ICommentSanitizer, CommentSanitizer>();
             builder.Services.AddScoped<IFileService, FileService>();
-            builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddSingleton<ICommentCacheManager, CommentCacheManager>();
+            builder.Services.AddScoped<ICommentService, CachedCommentService>();
             builder.Services.AddSingleton<ICommentQueueService, CommentQueueService>();
             builder.Services.AddHostedService<QueuedCommentProcessor>();
 

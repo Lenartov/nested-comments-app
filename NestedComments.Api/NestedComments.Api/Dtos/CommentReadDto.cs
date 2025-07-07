@@ -1,4 +1,6 @@
-﻿namespace NestedComments.Api.Dtos
+﻿using NestedComments.Api.Models;
+
+namespace NestedComments.Api.Dtos
 {
     public class CommentReadDto
     {
@@ -11,5 +13,20 @@
         public string? FilePath { get; set; }
         public string? FileExtension { get; set; }
         public bool HasReplies { get; set; }
+
+        public static implicit operator CommentReadDto(Comment comment)
+        {
+            return new CommentReadDto
+            {
+                Id = comment.Id,
+                UserName = comment.UserName,
+                Message = comment.Message,
+                Email = comment.Email,
+                CreatedAt = comment.CreatedAt,
+                HomePage = comment.HomePage,
+                FilePath = comment.FilePath,
+                FileExtension = comment.FileExtension,
+            };
+        }
     }
 }

@@ -77,7 +77,7 @@ namespace NestedComments.Api.Controllers
             _commentQueueService.Enqueue(new CommentQueueItem
             {
                 Dto = dto,
-                SavedFilePath = savedFilePath,
+                FilePath = savedFilePath,
                 FileExtension = fileExtension
             });
 
