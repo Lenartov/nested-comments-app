@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NestedComments.Api.Data;
 using NestedComments.Api.Services;
+using NestedComments.Api.Settings;
 
 namespace NestedComments.Api
 {
@@ -16,17 +17,7 @@ namespace NestedComments.Api
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(20);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.None; 
-            });
-
+            builder.Services.Configure<CaptchaSettings>(builder.Configuration.GetSection("CaptchaSettings"));
             builder.Services.AddScoped<ICaptchaService, CaptchaService>();
             builder.Services.AddScoped<ICommentSanitizer, CommentSanitizer>();
             builder.Services.AddScoped<IFileService, FileService>();
@@ -54,7 +45,6 @@ namespace NestedComments.Api
             app.UseStaticFiles();
             app.UseRouting();
             app.UseCors("AllowAngularApp");
-            app.UseSession();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

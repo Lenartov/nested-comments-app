@@ -1,5 +1,6 @@
+import { CaptchaResponse } from "../models/captcha.model";
 import { CaptchaService } from "./captcha.service";
-import { Observable, switchMap, map } from "rxjs";
+import { Observable, map } from "rxjs";
 import { SafeUrl } from "@angular/platform-browser";
 import { Injectable } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
@@ -8,21 +9,12 @@ import { DomSanitizer } from "@angular/platform-browser";
 export class CaptchaImageService {
   constructor(private captchaService: CaptchaService, private sanitizer: DomSanitizer) {}
 
-  getSafeCaptcha(): Observable<SafeUrl> {
+  getCaptchaImage(): Observable<{ captchaImageBase64: SafeUrl; captchaToken: string }> {
     return this.captchaService.getCaptcha().pipe(
-      switchMap(blob => this.readAsDataURL(blob)),
-      map(base64 => this.sanitizer.bypassSecurityTrustUrl(base64))
+      map((captcha: CaptchaResponse) => ({
+        captchaImageBase64: this.sanitizer.bypassSecurityTrustUrl(`data:image/png;base64,${captcha.captchaImageBase64}`),
+        captchaToken: captcha.captchaToken
+      }))
     );
-  }
-
-  private readAsDataURL(blob: Blob): Observable<string> {
-    return new Observable(observer => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        observer.next(reader.result as string);
-        observer.complete();
-      };
-      reader.readAsDataURL(blob);
-    });
   }
 }

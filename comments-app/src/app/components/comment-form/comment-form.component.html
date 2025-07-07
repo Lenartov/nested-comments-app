@@ -54,7 +54,11 @@
     <label for="captcha">Captcha</label>
 
     <div class="captcha-image-wrapper">
-<img *ngIf="captchaImage$ | async as captchaUrl" [src]="captchaUrl" alt="Captcha image">
+    <div *ngIf="captchaData$ | async as captchaData">
+      <img [src]="captchaData.captchaImageBase64" alt="captcha">
+      <!-- Якщо треба, покажи токен для дебагу -->
+      <!-- <div>Token: {{ captchaData.captchaToken }}</div> -->
+    </div>
       <button type="button" class="refresh-button" (click)="reloadCaptcha()" aria-label="Refresh captcha">
         🔄
       </button>

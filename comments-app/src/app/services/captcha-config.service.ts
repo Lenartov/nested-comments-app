@@ -6,6 +6,6 @@ import { environment } from '../../environments/environment';
 })
 export class CaptchaConfigService {
   get apiUrl(): string {
-    return `${environment.apiBaseUrl}/Captcha`;
+    return `${environment.apiBaseUrl}/JwtCaptcha`;
   }
 }

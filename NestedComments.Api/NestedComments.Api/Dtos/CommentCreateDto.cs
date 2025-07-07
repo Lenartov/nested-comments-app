@@ -21,10 +21,6 @@ public class CommentCreateDto
     [ValidUrl(ErrorMessage = "Invalid URL format")]
     public string? HomePage { get; set; }
 
-    [Required(ErrorMessage = "Captcha is required")]
-    [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "Captcha must contain only Latin letters and digits")]
-    public required string Captcha { get; set; }
-
     [Required(ErrorMessage = "Message text is required")]
     //[RegularExpression(@"\S+", ErrorMessage = "Message cannot contain only spaces")]
     [StringLength(ValidationRules.MessageMaxLength, ErrorMessage = "Message is too long")]

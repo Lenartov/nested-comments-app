@@ -2,7 +2,6 @@ export interface CommentCreate {
   userName: string;           
   email: string;              
   homePage?: string | null;   
-  captcha: string;            
   message: string;            
   parentCommentId?: number | null; 
 }

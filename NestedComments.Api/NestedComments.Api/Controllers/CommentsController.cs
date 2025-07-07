@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NestedComments.Api.Data;
 using NestedComments.Api.Dtos;
-using NestedComments.Api.Models;
 using NestedComments.Api.Services;
 
 namespace NestedComments.Api.Controllers
@@ -11,27 +8,18 @@ namespace NestedComments.Api.Controllers
     [Route("api/[controller]")]
     public class CommentsController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IWebHostEnvironment _environment;
         private readonly IFileService _fileService;
         private readonly ICommentService _commentService;
-        private readonly ICaptchaService _captchaService;
         private readonly ICommentSanitizer _commentSanitizer;
 
         public CommentsController(
-            AppDbContext context,
-            IWebHostEnvironment environment,
             IFileService fileService,
             ICommentService commentService,
-            ICaptchaService captchaService,
             ICommentSanitizer commentSanitizer
             )
         {
-            _context = context;
-            _environment = environment;
             _fileService = fileService;
             _commentService = commentService;
-            _captchaService = captchaService;
             _commentSanitizer = commentSanitizer;
         }
 
@@ -56,10 +44,6 @@ namespace NestedComments.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-
-            if (!_captchaService.ValidateCaptcha(HttpContext, dto.Captcha))
-                return BadRequest(new { error = "Invalid CAPTCHA" });
 
             if(!_commentSanitizer.IsContainValidTags(dto.Message))
                 return BadRequest(new { error = "Message contains invalid content" });

@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CaptchaConfigService } from './captcha-config.service';
-
-export interface CaptchaResponse {
-  captchaId: string;
-  imageUrl: string; 
-}
+import { CaptchaResponse, ValidateCaptchaRequest } from '../models/captcha.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +10,11 @@ export interface CaptchaResponse {
 export class CaptchaService {
   constructor(private http: HttpClient, private config: CaptchaConfigService) {}
 
-  getCaptcha(): Observable<Blob> {
-    return this.http.get(this.config.apiUrl, {
-      responseType: 'blob', 
-      withCredentials: true
-    });
+  getCaptcha(): Observable<CaptchaResponse> {
+    return this.http.get<CaptchaResponse>(this.config.apiUrl + '/generate');
+  }
+
+  validateCaptcha(request: ValidateCaptchaRequest): Observable<void> {
+    return this.http.post<void>(this.config.apiUrl + '/validate', request);
   }
 }
