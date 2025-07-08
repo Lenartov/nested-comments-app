@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using NestedComments.Api.Constants;
+using NestedComments.Api.Data;
+using NestedComments.Api.Dtos;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using NestedComments.Api.Constants;
 
 namespace NestedComments.Api.Models
 {
@@ -36,5 +38,20 @@ namespace NestedComments.Api.Models
         public Comment? ParentComment { get; set; }
 
         public List<Comment> Replies { get; set; } = new();
+
+        public static implicit operator Comment(CommentQueueItem item)
+        {
+            return new Comment
+            {
+                UserName = item.Dto.UserName,
+                Email = item.Dto.Email,
+                HomePage = item.Dto.HomePage,
+                Message = item.Dto.Message,
+                CreatedAt = DateTime.UtcNow,
+                ParentCommentId = item.Dto.ParentCommentId,
+                FilePath = item.FilePath,
+                FileExtension = item.FileExtension
+            };
+        }
     }
 }

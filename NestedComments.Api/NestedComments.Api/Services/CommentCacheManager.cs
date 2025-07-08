@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using NestedComments.Api.Dtos;
+using NestedComments.Api.Models;
 using NestedComments.Api.Services.Interfaces;
 using System.Collections.Concurrent;
+using System.Globalization;
 
 namespace NestedComments.Api.Services
 {
@@ -26,6 +28,7 @@ namespace NestedComments.Api.Services
         {
             var cacheKey = BuildCacheKey(parentId, sortBy, sortDir, page, pageSize);
             var groupKey = BuildGroupKey(parentId);
+
 
             if (_cache.TryGetValue(cacheKey, out (IEnumerable<CommentReadDto>, int) cached))
             {

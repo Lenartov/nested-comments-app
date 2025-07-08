@@ -27,7 +27,10 @@ namespace NestedComments.Api
             builder.Services.AddScoped<ICommentService, CachedCommentService>();
             builder.Services.AddSingleton<ICommentQueueService, CommentQueueService>();
             builder.Services.AddHostedService<QueuedCommentProcessor>();
-
+            builder.Services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+            });
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngularApp",
