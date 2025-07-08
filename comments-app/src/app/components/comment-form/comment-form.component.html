@@ -1,5 +1,4 @@
 <div class="center-wrapper">
-
 <div class="parent-id-wrapper">
     <label *ngIf="parentId == null" for="parentIdInput">If you would like to respond, please click on the comment in the table below</label>
   <label *ngIf="parentId != null" for="parentIdInput">Now responding to user with ID:</label>
@@ -21,7 +20,6 @@
       User Name is required and must contain only Latin letters and digits.
     </div>
   </div>
-
   <div class="form-group">
     <label for="email">Email</label>
     <input
@@ -56,14 +54,11 @@
     <div class="captcha-image-wrapper">
     <div *ngIf="captchaData$ | async as captchaData">
       <img [src]="captchaData.captchaImageBase64" alt="captcha">
-      <!-- Якщо треба, покажи токен для дебагу -->
-      <!-- <div>Token: {{ captchaData.captchaToken }}</div> -->
     </div>
       <button type="button" class="refresh-button" (click)="reloadCaptcha()" aria-label="Refresh captcha">
         🔄
       </button>
     </div>
-
     <input
       id="captcha"
       type="text"
@@ -83,6 +78,7 @@
       formControlName="message"
       placeholder="Write your comment"
       rows="5"
+      #messageInput
       [class.invalid]="form.get('message')?.invalid && (form.get('message')?.touched || form.get('message')?.dirty)"
     ></textarea>
     <div *ngIf="form?.get('message')?.touched || form.get('message')?.dirty" class="error">
@@ -100,7 +96,14 @@
       </div>
     </div>
   </div>
-
+  <div class="toolbar">
+    <button type="button" (click)="wrapText('strong')"><strong>B</strong></button>
+    <button type="button" (click)="wrapText('i')"><i>I</i></button>
+    <button type="button" (click)="wrapText('code')">&lt;code&gt;</button>
+    <button type="button" (click)="wrapText('a', ' href=&quot;&quot; title=&quot;&quot;')">Link</button>
+    <button type="button" (click)="togglePreview()">{{ showPreview ? 'Hide message preview' : 'Show message preview' }}</button>
+  </div>
+  <div *ngIf="showPreview"  class="preview-box" [innerHTML]="previewHtml"></div>
   <div class="form-group file-upload">
     <label for="fileUpload">Attach a file (optional):</label>
     <button type="button" class="file-button" (click)="fileInput.click()">

@@ -4,13 +4,14 @@ import { CommentService } from '../../services/comment.service';
 import { SafeUrl } from '@angular/platform-browser';
 import { CommentSelectionService } from '../../services/comment-selection.service';
 import { Subscription, Observable } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CaptchaImageService } from '../../services/captcha-image.service';
 import { BuildCommentForm } from './comment-form.builder';
 import { sanitizeComment } from '../../Utils/sanitize-comment';
 import { tap } from 'rxjs/operators';
 import { CaptchaService } from '../../services/captcha.service';
 import { shareReplay } from 'rxjs/operators';
+import DOMPurify from 'dompurify';
 
 @Component({
   selector: 'app-comment-form',
@@ -20,6 +21,8 @@ import { shareReplay } from 'rxjs/operators';
   styleUrls: ['./comment-form.component.css'],
 })
 export class CommentFormComponent implements OnInit, OnDestroy {
+  @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
+
   form!: FormGroup;
 
   captchaData$!: Observable<{ captchaImageBase64: SafeUrl; captchaToken: string }>;
@@ -31,6 +34,9 @@ export class CommentFormComponent implements OnInit, OnDestroy {
 
   message: string | null = null;
   isError: boolean = false;
+
+  showPreview = false;
+  previewHtml = '';
 
   constructor(
     private fb: FormBuilder,
@@ -44,9 +50,13 @@ export class CommentFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.reloadCaptcha();
-    this.subscriptions.add(
-      this.commentSelectionService.parentId$.subscribe((id) => (this.parentId = id))
-    );
+    this.subscriptions.add(this.commentSelectionService.parentId$.subscribe((id) => (this.parentId = id)));
+     this.form.get('message')?.valueChanges.subscribe((value) => 
+      {this.previewHtml = DOMPurify.sanitize(value, {
+        ALLOWED_TAGS: ['a', 'code', 'i', 'strong'],
+        ALLOWED_ATTR: ['href', 'title']
+      });
+  });
   }
 
   ngOnDestroy(): void {
@@ -131,4 +141,32 @@ private resetFormAndCaptcha(): void {
   this.selectedFile = null;
   this.reloadCaptcha();
 }
+
+togglePreview() {
+  this.showPreview = !this.showPreview;
+}
+
+wrapText(tag: string, attributes: string = '') {
+    const textarea = this.messageInput.nativeElement;
+    const value = textarea.value;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+
+    const selectedText = value.slice(start, end);
+    const tagOpen = `<${tag}${attributes}>`;
+    const tagClose = `</${tag}>`;
+
+    let newText: string;
+
+    if (start !== end) {
+      newText = value.slice(0, start) + tagOpen + selectedText + tagClose + value.slice(end);
+    } else {
+      newText = value.slice(0, start) + tagOpen + tagClose + value.slice(end);
+    }
+
+    this.form.get('message')!.setValue(newText);
+
+    const cursorPosition = start + tagOpen.length + (selectedText.length ? selectedText.length + tagClose.length : 0);
+    setTimeout(() => textarea.setSelectionRange(cursorPosition, cursorPosition));
+  }
 }

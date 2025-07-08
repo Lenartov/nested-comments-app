@@ -70,7 +70,6 @@ button[type='submit'],
   font-size: 1rem;
   padding: 10px 20px;
   user-select: none;
-  box-sizing: border-box;
 }
 
 button[type='submit'] {
@@ -183,4 +182,39 @@ button[type='submit']:disabled {
   color: #c62828;
   background-color: #ffebee;
   border: 1px solid #ef9a9a;
+}
+
+.toolbar {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.toolbar button {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  margin-right: 6px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.toolbar button:hover {
+  background-color: #ddd;
+}
+
+.preview-box {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 6px;
+  font-family: 'Segoe UI', sans-serif;
+  white-space: pre-wrap;
+}
+
+.toolbar button:last-child {
+  margin-left: auto;
+  border: 1px solid gray;
 }
