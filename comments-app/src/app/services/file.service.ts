@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FileConfigService } from './file-config.service';
+import { FileConfigService } from './configs/file-config.service';
 
 @Injectable({
   providedIn: 'root',

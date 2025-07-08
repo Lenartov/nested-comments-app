@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams  } from '@angular/common/http';
 import type { Observable } from 'rxjs';
 import type { CommentRead, CommentListResponse } from '../models/comment.model';
-import { CommentConfigService } from './comment-config.service';
+import { CommentConfigService } from './configs/comment-config.service';
 import { environment } from '../../environments/environment';
 
 @Injectable({

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CaptchaConfigService } from './captcha-config.service';
+import { CaptchaConfigService } from './configs/captcha-config.service';
 import { CaptchaResponse, ValidateCaptchaRequest } from '../models/captcha.model';
 
 @Injectable({

@@ -42,6 +42,8 @@ namespace NestedComments.Api
                         .AllowAnyMethod();
                     });
             });
+            builder.Services.AddSignalR();
+
 
             WebApplication app = builder.Build();
 
@@ -56,6 +58,7 @@ namespace NestedComments.Api
             app.UseCors("AllowAngularApp");
             app.UseAuthorization();
             app.MapControllers();
+            app.MapHub<CommentHub>("/commentHub");
             app.Run();
         }
     }

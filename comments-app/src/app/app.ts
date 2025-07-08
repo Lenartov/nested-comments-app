@@ -4,8 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CommentService } from './services/comment.service';
 import { CommentFormComponent } from './components/comment-form/comment-form.component';
 import { CommentList } from './components/comment-list/comment-list';
-
-import { CommentListResponse } from './models/comment.model';
+import { SignalRService } from './services/signalr.service';
 
 @Component({
   selector: 'app-root',
@@ -15,8 +14,10 @@ import { CommentListResponse } from './models/comment.model';
   styleUrls: ['./app.css']
 })
 export class App {
-  comments: CommentListResponse = {items: [], totalCount: 0};
+  constructor(private http: HttpClient, private commentService: CommentService, private signalRService: SignalRService) {}
 
-  constructor(private http: HttpClient, private commentService: CommentService) {}
+  ngOnInit(): void {
+    this.signalRService.startConnection();
+}
 }
 

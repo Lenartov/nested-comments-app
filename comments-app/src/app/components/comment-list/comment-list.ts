@@ -7,7 +7,8 @@ import { CommentSelectionService } from '../../services/comment-selection.servic
 import { Subscription } from 'rxjs';
 import { FileService } from '../../services/file.service'
 import { sortComments } from '../../Utils/sort-comment';
-import { CommentConfigService } from '../../services/comment-config.service';
+import { CommentConfigService } from '../../services/configs/comment-config.service';
+import { SignalRService } from '../../services/signalr.service';
 
 @Component({
   selector: 'app-comment-list',
@@ -32,8 +33,14 @@ export class CommentList implements OnInit, OnDestroy {
   parentIdSub?: Subscription;
 
   fileModalUrl: string | null = null;
+  
+  private socketSubscription?: Subscription;
 
-  constructor(private commentService: CommentService, private commentSelection: CommentSelectionService, public fileService: FileService, private config: CommentConfigService) {}
+  constructor(private commentService: CommentService,
+              private commentSelection: CommentSelectionService,
+              public fileService: FileService,
+              private config: CommentConfigService,
+              private signalRService: SignalRService) {}
 
   ngOnInit(): void {
     this.currentPage = this.config.DEFAULT_PAGE;
@@ -42,10 +49,17 @@ export class CommentList implements OnInit, OnDestroy {
 
     this.parentIdSub = this.commentSelection.parentId$.subscribe((id) => {this.selectedParentId = id;});
     this.loadComments();
+
+    this.socketSubscription = this.signalRService.update$.subscribe((updatedParentIds) => {
+      if (updatedParentIds.includes(this.currentParentId === undefined ? null : this.currentParentId)) {
+        this.loadComments();
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.parentIdSub?.unsubscribe();
+    this.socketSubscription?.unsubscribe();
   }
 
   private loadComments(): void {

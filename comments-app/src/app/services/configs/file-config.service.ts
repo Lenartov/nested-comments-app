@@ -1,4 +1,4 @@
-import { environment } from "../../environments/environment";
+import { environment } from "../../../environments/environment";
 import { Injectable } from "@angular/core";
 
 @Injectable({
@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 })
 export class FileConfigService {
   get baseUrl(): string {
-    return environment.fileBaseUrl;
+    return environment.fileBaseUrl + '/';
   }
 
   get imageExtensions(): string[] {
