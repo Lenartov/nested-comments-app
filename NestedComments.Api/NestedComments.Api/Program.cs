@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using NestedComments.Api.Data;
 using NestedComments.Api.Extensions;
 using NestedComments.Api.Hubs;
 
@@ -17,6 +19,12 @@ namespace NestedComments.Api
             builder.Services.AddAppServices(builder.Configuration);
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                db.Database.Migrate();
+            }
 
             if (app.Environment.IsDevelopment())
             {
