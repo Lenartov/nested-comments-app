@@ -57,42 +57,35 @@ Live Demo:
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/)
 - [Node.js + Angular CLI](https://angular.io/cli)
-- [Docker](https://www.docker.com/)
-- SQL Server instance (local or cloud, e.g., Azure SQL)
-
+  
 ---
 
-### 🧪 1. Run EF Core Migrations (if needed)
-
-```bash
-dotnet ef migrations add InitialCreate
-dotnet ef database update
+###Frontend
 ```
-
----
-
-### 🐳 1. Build and Run Docker
-
-```bash
-# From the NestedComments.Api project root
-docker build -t nested-comments-api .
-docker run -p 5000:80 nested-comments-api
-```
-
-> Ensure your `appsettings.Production.json` contains the correct SQL connection string and CORS settings.
-
----
-
-### 💻 3. Run Angular Frontend (Locally)
-
-```bash
-cd nested-comments-app/comments-app/
+cd nested-comments-app-main\comments-app
 npm install
 ng serve
 ```
----
+> May need to be change apiUrl here: src/environments/environment.development.ts 
+
+###Backend
+Need to change Connection string & Corps:
+  "ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=NestedCommentsDb;Trusted_Connection=True;TrustServerCertificate=True;" //your local DB
+  },
+  "AllowedHosts": "*",
+    "Cors": {
+      "AllowedOrigins": ["http://localhost:4200"] //your frontend addres
+    }
+```
+cd NestedComments.Api\NestedComments.Api
+dotnet restore
+dotnet ef migrations add Initial
+dotnet ef database update
+dotnet run
+```
 
 ### 🌐 Production Deployment
 You can deploy both frontend and backend to platforms like **Render**, **Vercel**, or **Azure**. Make sure to:
 - Set proper **CORS** policies and **API base URLs** in production config files.
-
+- Also you can use Dockerfiles in project to make it.
