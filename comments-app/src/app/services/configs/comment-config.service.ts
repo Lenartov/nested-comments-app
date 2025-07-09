@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class CommentConfigService {
-  readonly PAGE_SIZE = 5;
+  readonly PAGE_SIZE = 25;
   readonly SORT_BY = 'createdAt';
   readonly SORT_DIR = 'desc';
   readonly DEFAULT_PAGE = 1;
