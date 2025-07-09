@@ -48,6 +48,7 @@ This is a full-stack web application that allows users to post, view, and reply 
 Live Demo:
 🌐 https://nested-comments-app.onrender.com
 > ⚠️ Initial page load might be slow due to free-tier cold start on Render.
+> Saved files can also disappear for the same reason.
 
 ---
 
