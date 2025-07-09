@@ -1,5 +1,5 @@
 {
-  "root": "dist/назва-проєкту",
+  "root": "dist/comments-app",
   "routes": {
     "/**": "index.html"
   }
