@@ -100,11 +100,11 @@ namespace NestedComments.Api.Services
             using var image = new Image<Rgba32>(width, height, Color.White);
             var collection = new FontCollection();
 
-            var font = collection.Add("Resources/LiberationSans-Regular.ttf");
+            var font = SystemFonts.CreateFont("Liberation Sans", 36, FontStyle.Bold);
 
             image.Mutate(ctx =>
             {
-                ctx.DrawText(captchaCode, font.CreateFont(36), Color.Black, new PointF(20, 10));
+                ctx.DrawText(captchaCode, font, Color.Black, new PointF(20, 10));
                 // add some noise
             });
 
