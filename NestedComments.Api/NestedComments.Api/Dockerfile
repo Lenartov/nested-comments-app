@@ -11,4 +11,8 @@ RUN dotnet publish "NestedComments.Api.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
+RUN apt-get update && apt-get install -y \
+    fonts-liberation \
+    ttf-mscorefonts-installer \
+    && rm -rf /var/lib/apt/lists/*
 ENTRYPOINT ["dotnet", "NestedComments.Api.dll"]
