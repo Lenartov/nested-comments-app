@@ -19,6 +19,7 @@ namespace NestedComments.Api.Events.Handlers
                 .Select(c => c.ParentCommentId)
                 .Distinct()
                 .ToList();
+            affectedParentIds.AddRange(notification.grandParentsId);
 
             await _hub.Clients.All.SendAsync("CommentsAddedBatch", affectedParentIds);
         }
