@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using NestedComments.Api.Hubs;
 
 namespace NestedComments.Api.Events.Handlers
 {

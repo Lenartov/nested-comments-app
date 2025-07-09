@@ -1,8 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using NestedComments.Api.Data;
-using NestedComments.Api.Services;
-using NestedComments.Api.Services.Interfaces;
-using NestedComments.Api.Settings;
+using NestedComments.Api.Extensions;
+using NestedComments.Api.Hubs;
 
 namespace NestedComments.Api
 {
@@ -10,55 +7,36 @@ namespace NestedComments.Api
     {
         public static void Main(string[] args)
         {
-            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-                sqlOptions => sqlOptions.EnableRetryOnFailure()));
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddMemoryCache();
-            builder.Services.Configure<CaptchaSettings>(builder.Configuration.GetSection("CaptchaSettings"));
-            builder.Services.AddScoped<ICaptchaService, CaptchaService>();
-            builder.Services.AddScoped<ICommentSanitizer, CommentSanitizer>();
-            builder.Services.AddScoped<IFileService, FileService>();
-            builder.Services.AddSingleton<ICommentCacheManager, CommentCacheManager>();
-            builder.Services.AddScoped<ICommentService, CachedCommentService>();
-            builder.Services.AddSingleton<ICommentQueueService, CommentQueueService>();
-            builder.Services.AddHostedService<QueuedCommentProcessor>();
-            builder.Services.AddMediatR(cfg =>
-            {
-                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-            });
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAngularApp",
-                    policy =>
-                    {
-                        policy.WithOrigins("http://localhost:4200")
-                        .AllowCredentials()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                    });
-            });
-            builder.Services.AddSignalR();
+            builder.Services.AddAppSwagger(builder.Environment);
+            builder.Services.AddAppSignalR();
+            builder.Services.AddCorsPolicy(builder.Configuration);
+            builder.Services.AddAppServices(builder.Configuration);
 
-
-            WebApplication app = builder.Build();
+            var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            else
+            {
+                app.UseExceptionHandler("/error");
+                app.UseHsts();
+            }
 
             app.UseStaticFiles();
             app.UseRouting();
             app.UseCors("AllowAngularApp");
             app.UseAuthorization();
+
             app.MapControllers();
             app.MapHub<CommentHub>("/commentHub");
+
             app.Run();
         }
     }

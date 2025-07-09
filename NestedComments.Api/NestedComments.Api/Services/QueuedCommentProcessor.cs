@@ -56,8 +56,11 @@ namespace NestedComments.Api.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error processing comment batch.");
-                    await Task.Delay(DelayBetweenBatches, stoppingToken);
+                    if (!stoppingToken.IsCancellationRequested)
+                    {
+                        _logger.LogError(ex, "Error processing comment batch.");
+                        await Task.Delay(DelayBetweenBatches, stoppingToken);
+                    }
                 }
             }
 

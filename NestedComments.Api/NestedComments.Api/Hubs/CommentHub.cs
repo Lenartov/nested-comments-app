@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using System.Text.RegularExpressions;
 
-namespace NestedComments.Api
+namespace NestedComments.Api.Hubs
 {
     public class CommentHub : Hub
     {
