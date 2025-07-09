@@ -99,7 +99,7 @@ namespace NestedComments.Api.Services
 
             using var image = new Image<Rgba32>(width, height, Color.White);
 
-            var font = SystemFonts.CreateFont("Arial", 36, FontStyle.Bold);
+            var font = SystemFonts.CreateFont("Liberation Sans", 36, FontStyle.Bold);
 
             image.Mutate(ctx =>
             {
