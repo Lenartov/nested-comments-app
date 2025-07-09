@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./NestedComments.Api
+    ports:
+      - "5000:80"
+
+  frontend:
+    build:
+      context: ./comments-app
+    ports:
+      - "80:80"
